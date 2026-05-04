@@ -390,8 +390,8 @@
     <script type="module">
         import { pipeline } from "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.16.0";
 
-        const APP_VERSION = "3.0.1";
-        const USE_WASM = false; // Set to true once you have compiled your .wasm file!
+        const APP_VERSION = "3.0.2";
+        const USE_WASM = true; 
         
         let wasmEngine = null;
         if (USE_WASM) {
@@ -643,8 +643,8 @@
                 const div = document.createElement('div');
                 div.className = "glass-panel rounded-2xl p-6 border border-white/10 relative shadow-2xl transition-all hover:border-sky-500/50 group";
                 div.innerHTML = `
-                    <h3 class="text-xl font-bold text-slate-100 mb-1 group-hover:text-sky-400 transition-colors">${pack.title}</h3>
-                    <p class="text-xs text-sky-400 font-bold uppercase tracking-widest mb-6">${pack.specialization}</p>
+                    <h3 class="text-base font-bold text-slate-100 mb-0.5 group-hover:text-sky-400 transition-colors">${pack.title}</h3>
+                    <p class="text-[10px] text-sky-400 font-bold uppercase tracking-widest mb-4">${pack.specialization}</p>
                     
                     <div class="space-y-4">
                         <div class="flex justify-between items-end">
@@ -726,6 +726,9 @@
                 updateMetrics(rawTextWords.length);
                 await renderKnowledgePacks();
                 addMessage("Kalpanā", `I've activated the "${pack.title}" Knowledge Pack. Ask me anything about it and I'll recall instantly.`);
+                
+                // v3.0.2: Auto-navigate to first screen
+                document.getElementById('packs-overlay').classList.add('hidden');
             } catch(e) {
                 console.error("Load Active Error: ", e);
                 alert("Load failed! Error: " + e.message);
@@ -1577,7 +1580,7 @@
                             newWorker.addEventListener('statechange', async () => {
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                                     // A new service worker is available; notify user
-                                    const confirmed = await showModal("Security Update", `A new secure version of Kalpanā (v${APP_VERSION}) is ready. You must update to continue using the proprietary engine.`, true);
+                                    const confirmed = await showModal("Security Update", `A new secure version of Kalpanā (v3.0.2) is ready. You must update to continue using the proprietary engine.`, true);
                                     if (confirmed) window.location.reload();
                                 }
                             });
