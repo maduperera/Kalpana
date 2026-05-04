@@ -714,7 +714,10 @@
                 
                 if (USE_WASM && wasmEngine) {
                     wasmEngine.initEngine(_b0, _d1, 10.0, 3e-4, 0.35);
-                    wasmEngine.setState(pack.stateRe, pack.stateIm, pack._o3, pack._p4);
+                    // v3.0.3 Fix: Ensure _o3 and _p4 are not null to avoid WASM "value must not be null" error
+                    const stateO3 = pack._o3 || new Float32Array(_b0);
+                    const stateP4 = pack._p4 || new Float32Array(_b0);
+                    wasmEngine.setState(pack.stateRe, pack.stateIm, stateO3, stateP4);
                     kalpanaState = { isWASM: true }; 
                 } else {
                     await showModal("Engine Error", "Secure Engine (WASM) is not available.");
@@ -812,7 +815,10 @@
                 const metaBytes = encoder.encode(meta);
                 
                 const header = new Int32Array([metaBytes.length]);
-                const blob = new Blob([ header.buffer, metaBytes.buffer, pack.stateRe.buffer, pack.stateIm.buffer ], { type: "application/octet-stream" });
+                // v3.0.3 Fix: Include _o3 and _p4 in the binary blob
+                const stateO3 = pack._o3 || new Float32Array(_b0);
+                const stateP4 = pack._p4 || new Float32Array(_b0);
+                const blob = new Blob([ header.buffer, metaBytes.buffer, pack.stateRe.buffer, pack.stateIm.buffer, stateO3.buffer, stateP4.buffer ], { type: "application/octet-stream" });
                 const fileName = pack.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + ".kp";
 
                 // Native Share Sheet Logic
@@ -864,11 +870,22 @@
                 const stateRe = new Float32Array(ab.slice(byteOffset, byteOffset + arrayLength * 4));
                 const stateIm = new Float32Array(ab.slice(byteOffset + arrayLength * 4, byteOffset + arrayLength * 8));
                 
+                // v3.0.3 Fix: Import _o3 and _p4 if they exist in the binary
+                let stateO3 = null;
+                let stateP4 = null;
+                const extraOffset = byteOffset + arrayLength * 8;
+                if (ab.byteLength >= extraOffset + _b0 * 8) {
+                    stateO3 = new Float32Array(ab.slice(extraOffset, extraOffset + _b0 * 4));
+                    stateP4 = new Float32Array(ab.slice(extraOffset + _b0 * 4, extraOffset + _b0 * 8));
+                }
+
                 const pack = {
                     id: 'kp-' + Date.now(),
                     ...meta,
                     stateRe,
                     stateIm,
+                    _o3: stateO3,
+                    _p4: stateP4,
                     createdAt: Date.now()
                 };
                 // Also import _o3/_p4 if they exist in the binary, otherwise generate
