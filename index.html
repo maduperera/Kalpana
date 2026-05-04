@@ -711,7 +711,7 @@
                 }
                 
                 if (USE_WASM && wasmEngine) {
-                    wasmEngine.initEngine(_b0);
+                    wasmEngine.initEngine(_b0, _d1, 10.0, 3e-4, 0.35);
                     kalpanaState = { isWASM: true }; 
                 } else {
                     kalpanaState = new LogicShield.KalpanaState(_b0, _d1);
@@ -917,7 +917,7 @@
                 let pack; let startT = 0; let currentTokens = 0;
                 if (isAppendingToPackId === 'NEW') {
                     if (USE_WASM && wasmEngine) {
-                        wasmEngine.initEngine(_b0);
+                        wasmEngine.initEngine(_b0, _d1, 10.0, 3e-4, 0.35);
                         kalpanaState = { isWASM: true, stateRe: new Float32Array(_b0 * _d1), stateIm: new Float32Array(_b0 * _d1), _o3: new Float32Array(_b0), _p4: new Float32Array(_b0) };
                     } else {
                         kalpanaState = new LogicShield.KalpanaState(_b0, _d1);
