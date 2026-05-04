@@ -333,9 +333,9 @@
                 <span class="text-xs text-sky-400 font-medium" id="spinner-text">Processing...</span>
             </div>
 
-            <button onclick="clearChat()" class="flex items-center space-x-2 px-3 py-2 text-slate-400 hover:text-red-400 hover:bg-red-400/5 rounded-xl transition-all" title="Clear Chat History">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span class="text-xs font-bold uppercase tracking-wider">Clear</span>
+            <button onclick="clearChat()" class="flex items-center space-x-2 px-3 py-2 text-slate-400 hover:text-sky-400 hover:bg-sky-400/5 rounded-xl transition-all" title="New Chat">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                <span class="text-xs font-bold uppercase tracking-wider">New Chat</span>
             </button>
 
 
@@ -491,7 +491,14 @@
 
                 const hour = new Date().getHours();
                 const greeting = hour < 12 ? 'Good morning' : (hour < 18 ? 'Good afternoon' : 'Good evening');
-                addMessage("Kalpanā", `${greeting}. This is Kalpanā. Please activate a Knowledge Pack from the menu to begin.`);
+                const user = firebase.auth().currentUser;
+                let userName = "";
+                if (user) {
+                    userName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+                    userName = userName.charAt(0).toUpperCase() + userName.slice(1);
+                }
+                const greetingText = userName ? `${greeting} ${userName}.` : `${greeting}.`;
+                addMessage("Kalpanā", `${greetingText} This is Kalpanā. Please activate a Knowledge Pack from the menu to begin.`);
 
             } catch (e) {
                 console.error(e);
@@ -1229,11 +1236,18 @@
             
             const hour = new Date().getHours();
             const greeting = hour < 12 ? 'Good morning' : (hour < 18 ? 'Good afternoon' : 'Good evening');
+            const user = firebase.auth().currentUser;
+            let userName = "";
+            if (user) {
+                userName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+                userName = userName.charAt(0).toUpperCase() + userName.slice(1);
+            }
+            const greetingText = userName ? `${greeting} ${userName}.` : `${greeting}.`;
             
             if (activePackId) {
-                addMessage("Kalpanā", `${greeting}. I have cleared my short-term memory cache. I am ready to continue analyzing the active Knowledge Pack.`);
+                addMessage("Kalpanā", `${greetingText} I have cleared my short-term memory cache. I am ready to continue analyzing the active Knowledge Pack.`);
             } else {
-                addMessage("Kalpanā", `${greeting}. This is Kalpanā. Please activate a Knowledge Pack from the menu to begin.`);
+                addMessage("Kalpanā", `${greetingText} This is Kalpanā. Please activate a Knowledge Pack from the menu to begin.`);
             }
         };
 
