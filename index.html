@@ -409,7 +409,7 @@
                 wasmEngine = module;
                 console.log("Kalpanā Vault: Binary Engine Initialized v" + wasmEngine.getVersion());
             }).catch(e => {
-                console.warn("WASM Load Failed, falling back to JS Shield.", e);
+                console.error("Kalpanā Vault: WASM Load Failed.", e);
             });
         }
         const _b0 = (1 << 11); 
@@ -426,7 +426,7 @@
             measurementId: "G-KTONY1QHMZ"
         };
 
-        // --- EMERGENCY CACHE PURGE (Fixes Mobile 'LogicShield' Not Found) ---
+        // --- EMERGENCY CACHE PURGE ---
         (async function() {
             const lastVersion = localStorage.getItem('kalpana_deployed_version');
             if (lastVersion !== APP_VERSION) {
@@ -454,8 +454,7 @@
 
         let extractor, kalpanaState, rawTextWords = [], totalEncodedCoordinates = 0, isRetrieving = false;
 
-        // --- KALPANĀ LOGIC SHIELD (PROTECTED) ---
-        // Logic handled by shield.js
+
 
 
         async function initialize() {
