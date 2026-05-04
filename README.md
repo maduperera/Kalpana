@@ -15,7 +15,7 @@ Kalpanā is a "Standalone Edge App" designed to run directly on your hardware fo
 Scan this QR code to open Kalpanā instantly on your smartphone:
 
 <p align="center">
-  <img src="./Kalpana_Ai_QR.png" width="300" alt="Kalpanā QR Code">
+  <img src="./Kalpanā_Ai_QR.png" width="300" alt="Kalpanā QR Code">
 </p>
 
 ### **Universal Installation Guide**
