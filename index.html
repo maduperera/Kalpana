@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<!-- KALPANA VERSION 2.9.6 - PROPRIETARY ENGINE BY VIJÑĀNA AI -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vijñāna AI | Kalpanā v3.0.1</title>
+
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WQP9213ZMB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WQP9213ZMB');
+    </script>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    
+    <!-- iOS support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Kalpanā">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="./shield.js?v=3.0.1"></script>
+    
+    <!-- Firebase SDKs (Compat Version for simpler integration) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .gradient-text { background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Markdown Styles */
+        .markdown-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
+        .markdown-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 0.75rem; }
+        .markdown-content li { margin-bottom: 0.25rem; }
+        .markdown-content p:last-child { margin-bottom: 0; }
+        .markdown-content p { margin-bottom: 0.75rem; }
+        .markdown-content strong { color: #38bdf8; font-weight: 600; }
+        .markdown-content em { color: #818cf8; font-style: italic; }
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 { color: #f8fafc; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .markdown-content h3 { font-size: 1.1em; }
+        .markdown-content code { background-color: rgba(15, 23, 42, 0.8); color: #34d399; padding: 0.1rem 0.3rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.9em; }
+        .markdown-content pre { background-color: rgba(15, 23, 42, 0.8); padding: 0.75rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 0.75rem; }
+        .markdown-content pre code { background-color: transparent; padding: 0; color: #38bdf8; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        
+        /* Loading Spinner */
+        .loader { border-top-color: #38bdf8; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #init-overlay { transition: opacity 0.5s ease; }
+        .hidden-fade { opacity: 0; pointer-events: none; }
+
+        /* Custom Tooltip System */
+        .tooltip-trigger { position: relative; cursor: help; }
+        .tooltip-content { 
+            position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
+            width: 200px; padding: 12px; border-radius: 12px;
+            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; font-size: 10px; line-height: 1.4;
+            opacity: 0; visibility: hidden; transition: all 0.2s ease; z-index: 100;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+        }
+        .tooltip-trigger:hover .tooltip-content { opacity: 1; visibility: visible; bottom: 140%; }
+        .tooltip-title { color: #38bdf8; font-weight: bold; margin-bottom: 4px; display: block; text-transform: uppercase; }
+        .tooltip-math { color: #818cf8; font-family: monospace; display: block; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.05); pt-2; }
+
+        /* Typing Dots Animation */
+        .typing-dot { animation: typing-bounce 1s infinite ease-in-out; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing-bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+
+    </style>
+</head>
+
+    <body class="min-h-screen w-full flex flex-col overflow-y-auto overflow-x-hidden bg-slate-900">
+
+    <!-- Custom Modal/Alert System -->
+    <div id="modal-container" class="hidden fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-xs rounded-3xl p-6 shadow-2xl border border-white/10 scale-95 transition-transform duration-200" id="modal-box">
+            <h3 id="modal-title" class="text-lg font-bold text-slate-100 mb-2">Message</h3>
+            <p id="modal-text" class="text-sm text-slate-400 leading-relaxed mb-6"></p>
+            <div class="flex justify-end space-x-3" id="modal-actions">
+                <button id="modal-cancel" class="px-5 py-2 text-sm font-semibold text-slate-500 hover:text-slate-300 transition-colors">Cancel</button>
+                <button id="modal-confirm" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-lg transition-all">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="ingest-overlay" class="hidden fixed inset-0 z-[150] bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
+        <div class="glass-panel w-full max-w-md p-8 rounded-2xl border border-white/10 shadow-2xl space-y-6">
+            <h2 id="ingest-title" class="text-xl font-bold text-slate-200">Processing Document</h2>
+            <p id="ingest-status" class="text-sm text-slate-400">Extracting Data...</p>
+
+            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden shadow-inner">
+                <div id="ingest-bar" class="bg-gradient-to-r from-sky-500 to-indigo-500 h-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            
+            <div class="flex justify-between items-center text-[10px] uppercase tracking-widest text-slate-500">
+                <span id="ingest-pct" class="font-bold text-sky-400">0%</span>
+                <span>Kalpanā is memorizing the document...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Knowledge Packs UI -->
+    <div id="packs-overlay" class="hidden absolute inset-0 z-[45] bg-slate-900 overflow-y-auto flex flex-col p-6 items-center">
+        <div class="max-w-4xl w-full mx-auto space-y-6 mt-16">
+            <div class="flex flex-col md:flex-row md:justify-between items-start md:items-center space-y-4 md:space-y-0 mb-8 border-b border-white/10 pb-6">
+                <button onclick="document.getElementById('packs-overlay').classList.add('hidden')" class="text-slate-400 hover:text-white flex items-center transition-colors">
+                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-width="2" stroke-linecap="round"/></svg>
+                    <span class="text-2xl font-bold tracking-tight">Knowledge Management</span>
+                </button>
+                <div class="flex space-x-3 self-end md:self-auto">
+                    <button onclick="document.getElementById('btn-import-pack').click()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 p-2 w-12 h-12 rounded-2xl shadow-xl transition-all flex items-center justify-center border border-white/5 group" title="Import Knowledge Pack">
+                        <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <input type="file" id="btn-import-pack" class="hidden" accept=".kp" />
+                    </button>
+                    <button onclick="document.getElementById('pack-name').value=''; document.getElementById('pack-spec').value=''; document.getElementById('create-modal').classList.remove('hidden')" class="bg-emerald-600 hover:bg-emerald-500 text-white w-12 h-12 rounded-2xl text-2xl font-bold shadow-lg shadow-emerald-900/20 transition-all flex items-center justify-center" title="Create New Pack">+</button>
+                </div>
+            </div>
+
+            <!-- Knowledge Pack Search -->
+            <div class="w-full mb-10 relative group">
+                <input type="text" id="pack-search-input" placeholder="Search knowledge packs by name or specialization..." class="w-full bg-slate-800/40 border border-white/10 rounded-2xl px-14 py-5 text-slate-200 outline-none focus:border-sky-500/50 focus:bg-slate-800/60 transition-all text-lg font-medium shadow-2xl backdrop-blur-sm">
+                <svg class="w-6 h-6 text-slate-500 absolute left-5 top-1/2 -translate-y-1/2 group-focus-within:text-sky-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+
+            <div id="packs-container" class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full pb-20">
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Pack Modal -->
+    <div id="create-modal" class="hidden absolute inset-0 z-[60] bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center p-4">
+        <div class="bg-[#1c2c26] w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-white/5 space-y-4">
+            <h3 class="text-lg font-bold text-slate-100 mb-4">Create Knowledge Pack</h3>
+            <div>
+                <label class="text-xs text-slate-400 block mb-1">Pack Name (e.g. Physics 101)</label>
+                <input type="text" id="pack-name" class="w-full bg-[#1e293b]/50 border border-emerald-900/30 rounded-lg p-3 text-sm text-slate-200 outline-none focus:border-emerald-500">
+            </div>
+            <div>
+                <label class="text-xs text-slate-400 block mb-1">Specialization (e.g. Law, Medicine)</label>
+                <input type="text" id="pack-spec" class="w-full bg-[#1e293b]/50 border border-emerald-900/30 rounded-lg p-3 text-sm text-slate-200 outline-none focus:border-emerald-500">
+            </div>
+            <p class="text-[10px] text-slate-400 leading-relaxed mt-2">You can safely insert up to 3 Million tokens per pack. Thanks to Kalpanā's Holographic Memory array, the storage footprint will remain permanently fixed at 6.3MB regardless of how many files you add.</p>
+            <div class="flex justify-between items-center pt-4">
+                <button onclick="document.getElementById('create-modal').classList.add('hidden')" class="text-emerald-500 text-sm font-semibold px-4 py-2 hover:text-emerald-300">Cancel</button>
+                <button onclick="document.getElementById('file-upload-create').click()" class="bg-emerald-800/40 text-emerald-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-emerald-800/60 transition-colors">Select document</button>
+                <input type="file" id="file-upload-create" class="hidden" accept=".pdf,.txt" />
+            </div>
+        </div>
+    </div>
+
+    <div id="init-overlay" class="absolute inset-0 z-[100] bg-slate-900 flex flex-col items-center justify-center p-6 text-center">
+        <div class="mb-6">
+            <img src="icon-192.png" onerror="this.src='./icon-192.png'; this.onerror=null;" alt="Vijñāna AI" class="h-20 w-auto mx-auto mb-4 opacity-90 mix-blend-screen">
+            <h1 class="text-4xl font-bold tracking-wider flex items-center justify-center">
+                <svg class="h-10 w-auto mr-2 text-sky-400" viewBox="0 0 254 157" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 5 49 L 6 51 L 6 56 L 9 62 L 12 62 L 15 59 L 16 51 L 18 49 L 19 50 L 20 59 L 22 62 L 25 63 L 28 60 L 29 50 L 30 48 L 32 47 L 34 51 L 34 63 L 36 67 L 38 68 L 42 68 L 46 63 L 46 57 L 47 56 L 47 44 L 50 39 L 52 39 L 54 41 L 54 77 L 55 78 L 55 80 L 58 84 L 62 86 L 67 87 L 72 85 L 77 79 L 77 77 L 78 76 L 78 69 L 75 64 L 75 71 L 73 75 L 70 78 L 65 79 L 60 75 L 59 70 L 58 69 L 59 45 L 58 44 L 58 40 L 56 36 L 52 33 L 48 34 L 45 38 L 45 40 L 44 41 L 44 55 L 43 56 L 43 61 L 40 64 L 37 62 L 37 60 L 36 59 L 36 48 L 35 47 L 35 45 L 32 43 L 28 46 L 28 48 L 27 49 L 27 56 L 24 60 L 22 58 L 22 52 L 21 51 L 20 46 L 17 46 L 15 48 L 15 50 L 14 51 L 14 56 L 11 60 L 8 57 L 8 51 L 9 50 L 8 48 L 6 48 Z M 240 37 L 234 29 L 224 21 L 220 20 L 217 18 L 209 17 L 208 16 L 193 16 L 192 17 L 187 17 L 186 18 L 183 18 L 182 19 L 177 20 L 174 22 L 172 22 L 168 24 L 166 26 L 161 28 L 149 36 L 133 50 L 132 50 L 121 61 L 120 61 L 91 90 L 91 91 L 53 131 L 53 132 L 43 141 L 46 140 L 58 131 L 85 106 L 109 88 L 127 79 L 137 77 L 138 76 L 144 76 L 145 75 L 157 76 L 166 80 L 169 82 L 179 93 L 179 95 L 181 99 L 181 102 L 182 103 L 182 113 L 181 114 L 181 117 L 179 120 L 179 122 L 169 133 L 166 135 L 164 135 L 160 137 L 150 137 L 141 133 L 134 126 L 131 120 L 130 114 L 129 113 L 129 106 L 128 106 L 128 111 L 127 112 L 127 115 L 125 118 L 125 120 L 121 127 L 116 132 L 107 136 L 101 136 L 94 133 L 88 127 L 86 123 L 86 121 L 85 120 L 85 114 L 82 122 L 83 130 L 85 134 L 91 140 L 101 144 L 107 144 L 108 143 L 111 143 L 116 141 L 119 139 L 128 129 L 135 138 L 144 143 L 150 144 L 151 145 L 159 145 L 160 144 L 164 144 L 173 140 L 182 132 L 186 126 L 190 116 L 190 110 L 191 109 L 191 104 L 190 103 L 190 97 L 189 96 L 189 94 L 184 85 L 175 76 L 161 70 L 155 70 L 154 69 L 141 70 L 140 71 L 133 72 L 122 77 L 120 77 L 114 81 L 109 83 L 106 86 L 104 85 L 116 73 L 117 73 L 132 59 L 133 59 L 149 46 L 158 40 L 163 38 L 165 36 L 167 36 L 174 32 L 176 32 L 183 29 L 187 29 L 188 28 L 207 28 L 218 32 L 224 36 L 230 42 L 233 46 L 238 57 L 238 60 L 240 65 L 240 71 L 241 72 L 241 86 L 240 87 L 240 93 L 239 94 L 238 102 L 237 103 L 236 108 L 234 111 L 234 113 L 232 116 L 232 118 L 222 134 L 210 146 L 208 146 L 207 145 L 205 147 L 205 150 L 206 151 L 209 151 L 210 147 L 225 133 L 231 125 L 241 106 L 241 104 L 245 94 L 245 90 L 247 85 L 247 78 L 248 77 L 248 63 L 247 62 L 246 52 Z M 102 87 L 103 86 L 104 87 L 103 88 Z M 103 86 L 104 85 L 105 86 L 104 87 Z M 114 8 L 109 6 L 106 6 L 105 5 L 96 5 L 95 6 L 92 6 L 82 11 L 74 19 L 70 27 L 70 30 L 69 31 L 69 41 L 73 51 L 79 57 L 85 60 L 96 60 L 100 58 L 106 52 L 106 50 L 107 49 L 107 41 L 105 37 L 100 34 L 95 34 L 93 35 L 89 40 L 89 43 L 91 46 L 93 47 L 96 47 L 98 45 L 100 46 L 99 48 L 93 53 L 87 53 L 85 52 L 78 44 L 78 42 L 77 41 L 77 33 L 78 32 L 78 30 L 81 25 L 87 19 L 92 16 L 94 16 L 98 14 L 105 14 L 106 15 L 109 15 L 114 17 L 117 19 L 124 27 L 126 32 L 126 38 L 127 38 L 128 29 L 127 28 L 126 21 L 123 16 Z" fill="currentColor" fill-rule="evenodd"/></svg>
+                lpanā
+            </h1>
+            <p class="text-[10px] text-slate-500 uppercase tracking-[0.2em] mb-2 font-semibold">by Vijñāna AI</p>
+            <p class="text-slate-400 mt-2">Initializing Framework <span class="app-version-root">v3.0.1</span> ...</p>
+        </div>
+        
+        <div class="w-full max-w-md space-y-8">
+            <div>
+                <div class="flex justify-between text-[10px] uppercase mb-1 tracking-widest">
+                    <span class="text-slate-500 font-semibold">Semantic Embedder</span>
+                    <span id="embedder-pct" class="text-sky-400">0%</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                    <div id="embedder-bar" class="bg-sky-500 h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between items-end mb-1">
+                    <div class="text-left">
+                        <span class="text-[10px] text-indigo-400 uppercase block">Cloud API</span>
+                        <span class="text-xs text-slate-300 uppercase tracking-tight">Gemini 2.5 Active</span>
+                    </div>
+                    <span class="text-indigo-400 text-xs font-mono">100%</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-indigo-500 h-full w-full"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTH OVERLAY -->
+    <div id="auth-overlay" class="hidden opacity-0 absolute inset-0 z-[60] bg-slate-900/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center transition-opacity duration-500">
+        <div class="glass-panel p-8 rounded-2xl max-w-sm w-full border border-indigo-500/30 shadow-[0_0_50px_rgba(79,70,229,0.15)]">
+            <img src="icon-192.png" onerror="this.src='./icon-192.png'; this.onerror=null;" alt="Vijñāna AI" class="h-16 w-auto mx-auto mb-6 opacity-90 mix-blend-screen">
+            <h2 class="text-2xl font-bold gradient-text mb-2">Secure Access</h2>
+            <p class="text-xs text-slate-400 mb-8 leading-relaxed">Sign in with your Google account to unlock the Kalpanā Proprietary Engine and access Gemini Cloud Reasoning.</p>
+            
+            <button id="btn-login" class="w-full bg-white text-slate-900 hover:bg-slate-100 font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-3 transition-all shadow-lg">
+                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.7.27h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.76l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.9.54C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.7 3.3-4.53 6.16-4.53z"/></svg>
+                <span>Continue with Google</span>
+            </button>
+            <p id="auth-error" class="text-xs text-red-400 mt-4 hidden"></p>
+
+            <div id="mobile-install-section" class="hidden mt-8 pt-8 border-t border-white/5 w-full flex flex-col items-center">
+                <p class="text-[10px] text-slate-500 uppercase font-bold mb-4 tracking-widest">Enhanced Mobile Experience</p>
+                <button id="pwa-install-btn" class="hidden bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-6 rounded-xl shadow-xl transition-all flex items-center space-x-2 border border-sky-400/30 w-full justify-center active:scale-95">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <span>Install Kalpanā App</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hamburger Side Menu -->
+    <div id="side-menu-overlay" class="hidden fixed inset-0 z-[70] bg-black/50 backdrop-blur-sm transition-opacity duration-300">
+        <div id="side-menu" class="absolute left-0 top-0 bottom-0 w-72 bg-[#0f172a] border-r border-white/10 shadow-2xl transform -translate-x-full transition-transform duration-300 flex flex-col">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center bg-slate-800/30">
+                <div class="flex items-center space-x-4">
+                    <img id="profile-img" src="icon-192.png" class="w-12 h-12 rounded-full border border-sky-500/30 object-cover shadow-lg" alt="Profile">
+                    <div class="overflow-hidden">
+                        <p id="profile-name" class="text-sm font-bold text-slate-200 truncate">Kalpanā User</p>
+                        <p id="profile-email" class="text-[10px] text-slate-400 truncate">...</p>
+                    </div>
+                </div>
+                <button id="btn-close-menu" class="text-slate-400 hover:text-white p-2 bg-slate-800/50 rounded-full transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="p-4 space-y-2 flex-1 mt-4">
+                <button onclick="openKnowledgePacks(); document.getElementById('btn-close-menu').click();" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-colors border border-transparent hover:border-white/5">
+                    <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <div class="text-left flex-1">
+                        <span class="text-sm font-semibold block">Knowledge Management</span>
+                        <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-tight" id="active-pack-title">No Pack Active</span>
+                    </div>
+                </button>
+
+                <!-- Inference Mode moved to menu -->
+                <div class="pt-4 border-t border-white/5">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-4">Inference Mode</h3>
+                    <div class="flex items-center justify-between px-4">
+                        <span class="text-sm text-slate-500 font-medium transition-colors" id="mode-kalpana">Recall Only</span>
+                        <label class="relative inline-flex items-center cursor-pointer mx-2">
+                            <input type="checkbox" id="mode-toggle" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500 border border-slate-600 transition-colors"></div>
+                        </label>
+                        <span class="text-sm text-indigo-400 font-medium transition-colors" id="mode-qwen">Recall & Think</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-white/5 bg-slate-800/10">
+                <button id="btn-logout-menu" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-colors border border-transparent hover:border-white/5">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    <span class="text-sm font-semibold">Sign Out</span>
+                </button>
+            </div>
+
+            <!-- Side Menu Install Prompt (Mobile Only) -->
+            <div id="side-menu-install-section" class="hidden p-4 border-t border-white/5 bg-slate-800/10">
+                <button id="pwa-install-btn-side" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2 active:scale-95 text-xs uppercase tracking-wider">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <span>Install Kalpanā App</span>
+                </button>
+            </div>
+
+            <!-- User Visits and IP Footer moved to bottom of menu -->
+            <div class="p-6 border-t border-white/5 space-y-4">
+                <div class="flex justify-center">
+                    <img src="https://visitor-badge.laobi.icu/badge?page_id=kalpana_pwa_vijñāna_ai" alt="Visitor Count" class="opacity-80 hover:opacity-100 transition-opacity">
+                </div>
+                <div class="text-center space-y-2">
+                    <p class="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">Intellectual Property</p>
+                    <p class="text-[10px] text-emerald-400/80 font-mono tracking-tight uppercase">Patent Pending: Application No. LK/P/1/24089</p>
+                    <div class="pt-2">
+                        <a href="mailto:support@vijñānaai.com" class="text-[9px] text-indigo-400 hover:text-indigo-300 transition-colors block font-semibold tracking-wider uppercase">Contact: support@vijñānaai.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="glass-panel p-4 flex justify-between items-center z-10 border-b border-white/5">
+        <div class="flex items-center space-x-4">
+            <button id="btn-hamburger" class="text-slate-400 hover:text-white transition-colors p-2.5 rounded-xl hover:bg-slate-800 focus:outline-none flex items-center border border-transparent hover:border-white/5">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight flex items-center">
+                    <svg class="h-7 md:h-8 w-auto mr-2 text-sky-400" viewBox="0 0 254 157" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 5 49 L 6 51 L 6 56 L 9 62 L 12 62 L 15 59 L 16 51 L 18 49 L 19 50 L 20 59 L 22 62 L 25 63 L 28 60 L 29 50 L 30 48 L 32 47 L 34 51 L 34 63 L 36 67 L 38 68 L 42 68 L 46 63 L 46 57 L 47 56 L 47 44 L 50 39 L 52 39 L 54 41 L 54 77 L 55 78 L 55 80 L 58 84 L 62 86 L 67 87 L 72 85 L 77 79 L 77 77 L 78 76 L 78 69 L 75 64 L 75 71 L 73 75 L 70 78 L 65 79 L 60 75 L 59 70 L 58 69 L 59 45 L 58 44 L 58 40 L 56 36 L 52 33 L 48 34 L 45 38 L 45 40 L 44 41 L 44 55 L 43 56 L 43 61 L 40 64 L 37 62 L 37 60 L 36 59 L 36 48 L 35 47 L 35 45 L 32 43 L 28 46 L 28 48 L 27 49 L 27 56 L 24 60 L 22 58 L 22 52 L 21 51 L 20 46 L 17 46 L 15 48 L 15 50 L 14 51 L 14 56 L 11 60 L 8 57 L 8 51 L 9 50 L 8 48 L 6 48 Z M 240 37 L 234 29 L 224 21 L 220 20 L 217 18 L 209 17 L 208 16 L 193 16 L 192 17 L 187 17 L 186 18 L 183 18 L 182 19 L 177 20 L 174 22 L 172 22 L 168 24 L 166 26 L 161 28 L 149 36 L 133 50 L 132 50 L 121 61 L 120 61 L 91 90 L 91 91 L 53 131 L 53 132 L 43 141 L 46 140 L 58 131 L 85 106 L 109 88 L 127 79 L 137 77 L 138 76 L 144 76 L 145 75 L 157 76 L 166 80 L 169 82 L 179 93 L 179 95 L 181 99 L 181 102 L 182 103 L 182 113 L 181 114 L 181 117 L 179 120 L 179 122 L 169 133 L 166 135 L 164 135 L 160 137 L 150 137 L 141 133 L 134 126 L 131 120 L 130 114 L 129 113 L 129 106 L 128 106 L 128 111 L 127 112 L 127 115 L 125 118 L 125 120 L 121 127 L 116 132 L 107 136 L 101 136 L 94 133 L 88 127 L 86 123 L 86 121 L 85 120 L 85 114 L 82 122 L 83 130 L 85 134 L 91 140 L 101 144 L 107 144 L 108 143 L 111 143 L 116 141 L 119 139 L 128 129 L 135 138 L 144 143 L 150 144 L 151 145 L 159 145 L 160 144 L 164 144 L 173 140 L 182 132 L 186 126 L 190 116 L 190 110 L 191 109 L 191 104 L 190 103 L 190 97 L 189 96 L 189 94 L 184 85 L 175 76 L 161 70 L 155 70 L 154 69 L 141 70 L 140 71 L 133 72 L 122 77 L 120 77 L 114 81 L 109 83 L 106 86 L 104 85 L 116 73 L 117 73 L 132 59 L 133 59 L 149 46 L 158 40 L 163 38 L 165 36 L 167 36 L 174 32 L 176 32 L 183 29 L 187 29 L 188 28 L 207 28 L 218 32 L 224 36 L 230 42 L 233 46 L 238 57 L 238 60 L 240 65 L 240 71 L 241 72 L 241 86 L 240 87 L 240 93 L 239 94 L 238 102 L 237 103 L 236 108 L 234 111 L 234 113 L 232 116 L 232 118 L 222 134 L 210 146 L 208 146 L 207 145 L 205 147 L 205 150 L 206 151 L 209 151 L 210 147 L 225 133 L 231 125 L 241 106 L 241 104 L 245 94 L 245 90 L 247 85 L 247 78 L 248 77 L 248 63 L 247 62 L 246 52 Z M 102 87 L 103 86 L 104 87 L 103 88 Z M 103 86 L 104 85 L 105 86 L 104 87 Z M 114 8 L 109 6 L 106 6 L 105 5 L 96 5 L 95 6 L 92 6 L 82 11 L 74 19 L 70 27 L 70 30 L 69 31 L 69 41 L 73 51 L 79 57 L 85 60 L 96 60 L 100 58 L 106 52 L 106 50 L 107 49 L 107 41 L 105 37 L 100 34 L 95 34 L 93 35 L 89 40 L 89 43 L 91 46 L 93 47 L 96 47 L 98 45 L 100 46 L 99 48 L 93 53 L 87 53 L 85 52 L 78 44 L 78 42 L 77 41 L 77 33 L 78 32 L 78 30 L 81 25 L 87 19 L 92 16 L 94 16 L 98 14 L 105 14 L 106 15 L 109 15 L 114 17 L 117 19 L 124 27 L 126 32 L 126 38 L 127 38 L 128 29 L 127 28 L 126 21 L 123 16 Z" fill="currentColor" fill-rule="evenodd"/></svg>
+                    <span class="gradient-text">lpanā</span> <span class="text-xs font-medium opacity-60 ml-2 align-middle app-version-root">v2.9.6</span>
+                </h1>
+                <p class="text-[10px] text-slate-500 tracking-widest uppercase font-semibold">Proprietary Engine by Vijñāna AI</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-3">
+            <div id="global-spinner" class="hidden flex items-center space-x-3 bg-slate-800/50 px-4 py-2 rounded-full border border-white/5">
+                <div class="loader ease-linear rounded-full border-2 border-t-2 border-slate-700 h-4 w-4"></div>
+                <span class="text-xs text-sky-400 font-medium" id="spinner-text">Processing...</span>
+            </div>
+
+            <button onclick="clearChat()" class="flex items-center space-x-2 px-3 py-2 text-slate-400 hover:text-red-400 hover:bg-red-400/5 rounded-xl transition-all" title="Clear Chat History">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="text-xs font-bold uppercase tracking-wider">Clear</span>
+            </button>
+
+
+            <button id="pwa-install-btn" class="hidden bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-400 px-4 py-2 rounded-xl border border-indigo-500/30 transition-all flex items-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="text-xs font-bold uppercase tracking-wider">Install</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+
+        <section class="flex-1 flex flex-col relative overflow-hidden">
+            <!-- Kalpanā Persona Background -->
+
+            
+            <div id="chat-history" class="flex-1 p-6 overflow-y-auto space-y-6 z-10 relative">
+            </div>
+
+            <div class="w-full p-4 md:p-6 bg-slate-900/80 backdrop-blur-md z-20 relative border-t border-white/5">
+                <!-- Image Attachment Preview -->
+                <div id="image-preview-container" class="hidden mb-3 mx-2 flex items-center space-x-3 bg-slate-800/80 border border-slate-700 p-2 rounded-xl w-max max-w-full">
+                    <img id="image-preview-thumb" src="" class="h-10 w-10 object-cover rounded-lg border border-white/10" alt="Attachment">
+                    <span id="image-preview-name" class="text-xs text-slate-300 truncate max-w-[150px]">image.png</span>
+                    <button id="btn-remove-image" class="text-slate-500 hover:text-red-400 p-1 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                <div class="glass-panel rounded-2xl flex items-center p-1.5 md:p-2 shadow-2xl border border-white/10 w-full max-w-full overflow-hidden">
+                    <input type="file" id="image-upload-input" accept="image/png, image/jpeg, image/webp" class="hidden">
+                    
+                    <button id="btn-attach" class="p-2 text-slate-400 hover:text-indigo-400 transition-colors ml-1 tooltip-trigger">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                        <span class="tooltip-content"><span class="tooltip-title">Attach Image</span>Provide an image for Kalpanā to analyze.</span>
+                    </button>
+
+                    <input type="text" id="query-input" placeholder="Ask about the state..." class="flex-1 min-w-0 bg-transparent border-none outline-none text-slate-200 px-3 md:px-4 placeholder-slate-600 text-sm" disabled>
+                    
+                    <button id="btn-speaker" class="p-2 text-slate-500 hover:text-sky-300 transition-colors mr-1 tooltip-trigger">
+                        <svg id="icon-speaker-on" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 9L3 9v6h3.5l4.5 4.5V4.5L6.5 9z"></path></svg>
+                        <svg id="icon-speaker-off" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>
+                        <span class="tooltip-content"><span class="tooltip-title">Voice Output</span>Toggle Kalpanā's verbal recitation.</span>
+                    </button>
+
+                    <button id="btn-voice" class="p-2 text-slate-500 hover:text-sky-400 transition-colors mr-2 tooltip-trigger relative">
+                        <div id="mic-pulse" class="hidden absolute inset-0 bg-red-500/20 rounded-full animate-ping"></div>
+                        <svg id="icon-mic-off" class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                        <svg id="icon-mic-on" class="w-5 h-5 text-red-500 relative z-10 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M7 4a3 3 0 016 0v6a3 3 0 11-6 0V4z" /><path d="M5 11a1 1 0 112 0 5 5 0 0010 0 1 1 0 112 0 7 7 0 01-14 0z" /><path d="M11 18v3a1 1 0 11-2 0v-3a1 1 0 112 0z" /></svg>
+                        <span class="tooltip-content"><span class="tooltip-title">Voice Search</span>Ask Kalpanā by voice.</span>
+                    </button>
+                    
+                    <button id="btn-send" class="bg-sky-600 hover:bg-sky-500 text-white rounded-xl px-4 py-2 transition-all flex items-center justify-center disabled:opacity-50 tooltip-trigger">
+                        <img src="curl-white.png" class="w-5 h-5 object-contain" alt="Send">
+                        <span class="tooltip-content"><span class="tooltip-title">Send Query</span>Extract from Kalpanā</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { pipeline } from "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.16.0";
+
+        const APP_VERSION = "3.0.1";
+        const _b0 = (1 << 11); 
+        const _d1 = (0x180); 
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyATKoFUwKECrxKfy8seMJLH3ZvLffkqyh8",
+            authDomain: "kalpanapro-2026.firebaseapp.com",
+            projectId: "kalpanapro-2026",
+            storageBucket: "kalpanapro-2026.firebasestorage.app",
+            messagingSenderId: "217475471844",
+            appId: "1:217475471844:web:3af3c3c63e82a8de848ff1",
+            measurementId: "G-KTONY1QHMZ"
+        };
+
+        // --- EMERGENCY CACHE PURGE (Fixes Mobile 'LogicShield' Not Found) ---
+        (async function() {
+            const lastVersion = localStorage.getItem('kalpana_deployed_version');
+            if (lastVersion !== APP_VERSION) {
+                console.log("Kalpanā: New Version Detected. Purging legacy caches...");
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) { await registration.unregister(); }
+                }
+                const cacheNames = await caches.keys();
+                for (let name of cacheNames) { await caches.delete(name); }
+                localStorage.setItem('kalpana_deployed_version', APP_VERSION);
+                console.log("Kalpanā: Cache Cleared. Hard Reloading...");
+                window.location.reload(true);
+            }
+        })();
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const functions = firebase.functions();
+        
+        // App Check (Disabled to resolve 400 errors during testing)
+        // const appCheck = firebase.appCheck();
+        // appCheck.activate("6LfHv9EsAAAAAB5Iutfd-xUPRAnBGjMdtkkCAmNt", true);
+
+        let extractor, kalpanaState, rawTextWords = [], totalEncodedCoordinates = 0, isRetrieving = false;
+
+        // --- KALPANĀ LOGIC SHIELD (PROTECTED) ---
+        // Logic handled by shield.js
+
+
+        async function initialize() {
+            try {
+
+                // Mirror both for de-duplication
+                document.title = `Vijñāna AI | Kalpanā v${APP_VERSION}`; 
+                
+                // Cleanup versioning elements
+                document.querySelectorAll('.app-version-root').forEach(el => {
+                    el.innerText = `v${APP_VERSION}`;
+                });
+
+                // 1. Load Embedder
+                extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
+                    progress_callback: (x) => {
+                        if (x.status === 'progress') {
+                            const p = Math.round((x.loaded / x.total) * 100);
+                            document.getElementById('embedder-bar').style.width = p+'%';
+                            document.getElementById('embedder-pct').innerText = p+'%';
+                        }
+                    }
+                });
+
+                // 3. Reveal UI
+                const overlay = document.getElementById('init-overlay');
+                overlay.classList.add('hidden-fade');
+                setTimeout(() => overlay.style.display = 'none', 550);
+                
+                document.getElementById('query-input').disabled = false;
+
+                const hour = new Date().getHours();
+                const greeting = hour < 12 ? 'Good morning' : (hour < 18 ? 'Good afternoon' : 'Good evening');
+                addMessage("Kalpanā", `${greeting}. This is Kalpanā. Please activate a Knowledge Pack from the menu to begin.`);
+
+            } catch (e) {
+                console.error(e);
+                alert("Initialization Error: " + e.message);
+            }
+        }
+
+        // Metrics calculation logic
+        function updateMetrics(wordCount) {
+            // Updated: Sidebar metrics removed.
+        }
+
+        function setIngestStatus(isActive, text = "", title = "Processing Document", progress = 0) {
+            const overlay = document.getElementById('ingest-overlay');
+            if (isActive) {
+                overlay.classList.remove('hidden');
+                document.getElementById('ingest-status').innerHTML = text;
+                document.getElementById('ingest-title').innerText = title;
+                document.getElementById('ingest-bar').style.width = progress + '%';
+                
+                document.getElementById('ingest-bar').classList.remove('bg-red-500');
+                document.getElementById('ingest-bar').classList.add('bg-gradient-to-r', 'from-sky-500', 'to-indigo-500');
+                
+                document.getElementById('ingest-pct').innerText = progress.toFixed(1) + '%';
+                document.getElementById('ingest-pct').classList.remove('text-red-400', 'text-slate-400');
+                document.getElementById('ingest-pct').classList.add('text-sky-400');
+                
+                overlay.onclick = null;
+            } else {
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function showModal(title, message, showCancel = false) {
+            return new Promise((resolve) => {
+                const container = document.getElementById('modal-container');
+                const titleEl = document.getElementById('modal-title');
+                const textEl = document.getElementById('modal-text');
+                const cancelBtn = document.getElementById('modal-cancel');
+                const confirmBtn = document.getElementById('modal-confirm');
+
+                titleEl.innerText = title;
+                textEl.innerHTML = message;
+                cancelBtn.style.display = showCancel ? 'block' : 'none';
+
+                container.classList.remove('hidden');
+                
+                const cleanup = (result) => {
+                    container.classList.add('hidden');
+                    confirmBtn.onclick = null;
+                    cancelBtn.onclick = null;
+                    resolve(result);
+                };
+
+                confirmBtn.onclick = () => cleanup(true);
+                cancelBtn.onclick = () => cleanup(false);
+            });
+        }
+
+        function setIngestError(errText) {
+            document.getElementById('ingest-bar').style.width = '100%';
+            document.getElementById('ingest-bar').classList.remove('from-sky-500', 'to-indigo-500', 'bg-gradient-to-r');
+            document.getElementById('ingest-bar').classList.add('bg-red-500');
+            document.getElementById('ingest-title').innerText = 'Ingestion Failed';
+            document.getElementById('ingest-status').innerHTML = `<span class="text-red-400 font-semibold">${errText}</span><br/><span class="text-xs text-slate-500 mt-2 block italic">Click anywhere on this popup to close</span>`;
+            document.getElementById('ingest-pct').innerText = 'ERROR';
+            document.getElementById('ingest-pct').classList.remove('text-sky-400');
+            document.getElementById('ingest-pct').classList.add('text-red-400');
+            
+            const overlay = document.getElementById('ingest-overlay');
+            overlay.onclick = () => overlay.classList.add('hidden');
+            // Reset any active file inputs
+            const inputs = ['file-upload-create', 'btn-import-pack', 'image-upload-input'];
+            inputs.forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = null; });
+        }
+
+        function setRetrieveButtonMode(isRetrieving) {
+            const btn = document.getElementById('btn-send');
+            if (isRetrieving) {
+                btn.disabled = true;
+                btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.747z"></path></svg>`;
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = `<img src="curl-white.png" class="w-5 h-5 object-contain" alt="Send">`;
+            }
+        }
+
+        const DB_NAME = "KalpanaDB";
+        const STORE_NAME = "knowledge_packs";
+
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(DB_NAME, 3);
+                req.onupgradeneeded = e => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: "id" });
+                    }
+                };
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function savePack(pack) {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, "readwrite");
+                tx.objectStore(STORE_NAME).put(pack);
+                tx.oncomplete = resolve;
+                tx.onerror = reject;
+            });
+        }
+
+        async function loadAllPacks() {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, "readonly");
+                const req = tx.objectStore(STORE_NAME).getAll();
+                req.onsuccess = () => resolve(req.result || []);
+                req.onerror = reject;
+            });
+        }
+
+        async function getPack(id) {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, "readonly");
+                const req = tx.objectStore(STORE_NAME).get(id);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = reject;
+            });
+        }
+
+        async function deletePack(id) {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, "readwrite");
+                tx.objectStore(STORE_NAME).delete(id);
+                tx.oncomplete = resolve;
+                tx.onerror = reject;
+            });
+        }
+
+        let isAppendingToPackId = null;
+        let activePackId = null;
+         async function renderKnowledgePacks(filter = "") {
+            const packs = await loadAllPacks();
+            const container = document.getElementById('packs-container');
+            container.innerHTML = '';
+            
+            const filteredPacks = packs.filter(p => 
+                p.title.toLowerCase().includes(filter.toLowerCase()) || 
+                p.specialization.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            filteredPacks.sort((a,b) => b.createdAt - a.createdAt);
+            
+            filteredPacks.forEach(pack => {
+                const tokensLeft = 3000000 - pack.tokens;
+                const div = document.createElement('div');
+                div.className = "glass-panel rounded-2xl p-6 border border-white/10 relative shadow-2xl transition-all hover:border-sky-500/50 group";
+                div.innerHTML = `
+                    <h3 class="text-xl font-bold text-slate-100 mb-1 group-hover:text-sky-400 transition-colors">${pack.title}</h3>
+                    <p class="text-xs text-sky-400 font-bold uppercase tracking-widest mb-6">${pack.specialization}</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-end">
+                            <div class="space-y-1">
+                                <span class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">SSD Storage</span>
+                                <span class="text-sm text-slate-300 block font-mono">6.3 MB</span>
+                            </div>
+                            <div class="text-right space-y-1">
+                                <span class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Capacity Left</span>
+                                <span class="text-sm text-emerald-400 block font-mono">${tokensLeft.toLocaleString()}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden border border-white/5">
+                            <div class="bg-gradient-to-r from-sky-500 to-emerald-500 h-full" style="width: ${(pack.tokens / 3000000 * 100).toFixed(1)}%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between text-[10px] text-slate-500 font-bold uppercase">
+                            <span>Tokens: ${pack.tokens.toLocaleString()}</span>
+                            <span>3.0M Max</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-8 pt-6 border-t border-white/5">
+                        <div class="flex space-x-2">
+                            <button onclick="showPackInfo('${pack.id}')" class="p-2 text-indigo-400 hover:text-white hover:bg-indigo-500/10 rounded-lg transition-all" title="View Pack Details">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </button>
+                            <button onclick="triggerAppendPack('${pack.id}')" class="p-2 text-sky-400 hover:text-white hover:bg-sky-500/10 rounded-lg transition-all" title="Append to Pack">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round"/></svg>
+                            </button>
+                            <button onclick="sharePack('${pack.id}')" class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all" title="Export Pack">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                            </button>
+                            <button onclick="trashPack('${pack.id}')" class="p-2 text-slate-500 hover:text-red-400 hover:bg-red-400/5 rounded-lg transition-all" title="Delete Pack">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                        <button onclick="loadActivePack('${pack.id}')" class="${activePackId === pack.id ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 cursor-default' : 'bg-sky-600 hover:bg-sky-500 text-white shadow-lg shadow-sky-900/20'} font-bold py-2 px-6 md:px-8 rounded-xl transition-all text-xs uppercase tracking-wider">
+                            ${activePackId === pack.id ? 'Active' : 'Load'}
+                        </button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        window.openKnowledgePacks = async function() {
+            document.getElementById('packs-overlay').classList.remove('hidden');
+            const searchInput = document.getElementById('pack-search-input');
+            if (searchInput) {
+                searchInput.value = "";
+                searchInput.oninput = (e) => renderKnowledgePacks(e.target.value);
+            }
+            await renderKnowledgePacks();
+        }
+
+        window.loadActivePack = async function(id) {
+            try {
+                const pack = await getPack(id);
+                if(!pack) {
+                    await showModal("Missing State", "This Knowledge Pack appears to have been corrupted or removed from local storage.");
+                    return;
+                }
+                
+                kalpanaState = new LogicShield.KalpanaState(_b0, _d1);
+                kalpanaState.stateRe.set(pack.stateRe);
+                kalpanaState.stateIm.set(pack.stateIm);
+                kalpanaState._o3.set(pack._o3 || kalpanaState._o3);
+                kalpanaState._p4.set(pack._p4 || kalpanaState._p4);
+
+                rawTextWords = pack.rawTextWords;
+                totalEncodedCoordinates = Math.ceil(rawTextWords.length / 80);
+                activePackId = id;
+                document.getElementById('active-pack-title').innerText = "Active Pack: " + pack.title;
+                updateMetrics(rawTextWords.length);
+                await renderKnowledgePacks();
+                addMessage("Kalpanā", `I've activated the "${pack.title}" Knowledge Pack. Ask me anything about it and I'll recall instantly.`);
+            } catch(e) {
+                console.error("Load Active Error: ", e);
+                alert("Load failed! Error: " + e.message);
+            }
+        }
+
+        window.trashPack = async function(id) {
+            const confirmed = await showModal("Delete Pack", "Are you sure you want to permanently erase this Knowledge Pack and its embedded data?", true);
+            if(!confirmed) return;
+            await deletePack(id);
+            if(activePackId === id) {
+                activePackId = null;
+                kalpanaState = null;
+                rawTextWords = [];
+                totalEncodedCoordinates = 0;
+                document.getElementById('active-pack-title').innerText = "No Pack Loaded";
+                document.getElementById('active-pack-spec').innerText = "Manage Knowledge Packs";
+                updateMetrics(0);
+            }
+            await renderKnowledgePacks();
+        }
+
+        window.triggerAppendPack = function(id) {
+            isAppendingToPackId = id;
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.pdf,.txt';
+            input.onchange = (e) => {
+                if(e.target.files.length > 0) processFile(e.target.files[0]);
+            };
+            input.click();
+        }
+
+        window.showPackInfo = async function(id) {
+            const pack = await getPack(id);
+            if (!pack) return;
+            
+            const fileList = (pack.filenames && pack.filenames.length > 0) 
+                ? pack.filenames.map(f => `<li class="text-slate-300 py-1 border-b border-white/5 last:border-0">• ${f}</li>`).join("")
+                : `<li class="text-slate-500 italic">No filename history available for this legacy pack.</li>`;
+
+            const content = `
+                <div class="text-left space-y-4">
+                    <div class="glass-panel p-4 rounded-xl border border-white/5">
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-2 tracking-widest">Contained Documents</p>
+                        <ul class="max-h-48 overflow-y-auto pr-2 custom-scrollbar text-sm">
+                            ${fileList}
+                        </ul>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="glass-panel p-3 rounded-xl border border-white/5">
+                            <p class="text-[10px] text-slate-500 uppercase font-bold mb-1 tracking-widest">Total Tokens</p>
+                            <p class="text-emerald-400 font-mono text-xs">${pack.tokens.toLocaleString()}</p>
+                        </div>
+                        <div class="glass-panel p-3 rounded-xl border border-white/5">
+                            <p class="text-[10px] text-slate-500 uppercase font-bold mb-1 tracking-widest">RAM Usage</p>
+                            <p class="text-sky-400 font-mono text-xs">6.3 MB</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            await showModal(`Pack Details: ${pack.title}`, content);
+        }
+
+        window.sharePack = async function(id) {
+            try {
+                const pack = await getPack(id);
+                if(!pack) return;
+                toggleUIStatus(true, "Bundling Binary .kp File...");
+                
+                const meta = JSON.stringify({ 
+                    title: pack.title, 
+                    specialization: pack.specialization, 
+                    tokens: pack.tokens, 
+                    rawTextWords: pack.rawTextWords,
+                    filenames: pack.filenames || []
+                });
+                const encoder = new TextEncoder();
+                const metaBytes = encoder.encode(meta);
+                
+                const header = new Int32Array([metaBytes.length]);
+                const blob = new Blob([ header.buffer, metaBytes.buffer, pack.stateRe.buffer, pack.stateIm.buffer ], { type: "application/octet-stream" });
+                const fileName = pack.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + ".kp";
+
+                // Native Share Sheet Logic
+                const file = new File([blob], fileName, { type: "application/octet-stream" });
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: `Kalpanā Knowledge Pack`,
+                        text: `Knowledge Pack: ${pack.title}`,
+                        files: [file]
+                    }).catch(err => {
+                        console.log("Share cancelled or failed", err);
+                        if (err.name !== 'AbortError') triggerDownload(blob, fileName);
+                    });
+                } else {
+                    triggerDownload(blob, fileName);
+                }
+                
+                toggleUIStatus(false);
+            } catch (e) {
+                console.error(e);
+                toggleUIStatus(false);
+                await showModal("Export Error", "A technical issue occurred while bundling the Knowledge Pack.");
+            }
+        }
+
+        function triggerDownload(blob, fileName) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        document.getElementById('btn-import-pack').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            try {
+                toggleUIStatus(true, "Unpacking Knowledge Pack...");
+                const ab = await file.arrayBuffer();
+                const header = new Int32Array(ab, 0, 1);
+                const metaLength = header[0];
+                const metaBytes = new Uint8Array(ab, 4, metaLength);
+                const metaStr = new TextDecoder().decode(metaBytes);
+                const meta = JSON.parse(metaStr);
+                
+                const byteOffset = 4 + metaLength;
+                const arrayLength = _b0 * _d1; 
+                const stateRe = new Float32Array(ab.slice(byteOffset, byteOffset + arrayLength * 4));
+                const stateIm = new Float32Array(ab.slice(byteOffset + arrayLength * 4, byteOffset + arrayLength * 8));
+                
+                const pack = {
+                    id: 'kp-' + Date.now(),
+                    ...meta,
+                    stateRe,
+                    stateIm,
+                    createdAt: Date.now()
+                };
+                // Also import _o3/_p4 if they exist in the binary, otherwise generate
+                await savePack(pack);
+                e.target.value = null; // reset input
+                toggleUIStatus(false);
+                await renderKnowledgePacks();
+            } catch(e) {
+                console.error(e);
+                toggleUIStatus(false);
+                await showModal("Import Failed", "This file does not appear to be a valid Kalpanā (.kp) binary.");
+            }
+        });
+
+        // Initialize pack creation interceptor
+        document.getElementById('file-upload-create').addEventListener('change', async (e) => {
+            const title = document.getElementById('pack-name').value.trim();
+            const spec = document.getElementById('pack-spec').value.trim();
+            if(!title || !spec) {
+                await showModal("Required Info", "Please provide a name and specialization for your Knowledge Pack before uploading.");
+                e.target.value = null;
+                return;
+            }
+            if(e.target.files.length > 0) {
+                isAppendingToPackId = 'NEW';
+                window.pendingPackMeta = { title, spec };
+                document.getElementById('create-modal').classList.add('hidden');
+                document.getElementById('packs-overlay').classList.add('hidden');
+                
+                processFile(e.target.files[0]);
+                e.target.value = null;
+            }
+        });
+
+        async function processFile(file) {
+            try {
+                if(!isAppendingToPackId) throw new Error("No pack context selected.");
+                setIngestStatus(true, "Parsing File Content...", "Extracting Data", 5);
+                let text = "";
+                if (file.name.toLowerCase().endsWith('.pdf')) { text = await extractTextFromPDF(file); }
+                else { text = await file.text(); }
+
+                const newWords = text.split(/\s+/).filter(w => w.length > 0);
+                if(newWords.length === 0) throw new Error("No text found.");
+
+                let pack; let startT = 0; let currentTokens = 0;
+                if (isAppendingToPackId === 'NEW') {
+                    kalpanaState = new LogicShield.KalpanaState(_b0, _d1); rawTextWords = [];
+                    pack = { id: 'kp-' + Date.now(), title: window.pendingPackMeta.title, specialization: window.pendingPackMeta.spec, tokens: 0, createdAt: Date.now() };
+                } else {
+                    pack = await getPack(isAppendingToPackId);
+                    kalpanaState = new LogicShield.KalpanaState(_b0, _d1);
+                    kalpanaState.stateRe.set(pack.stateRe); kalpanaState.stateIm.set(pack.stateIm);
+                    rawTextWords = [...pack.rawTextWords];
+                    startT = Math.ceil(rawTextWords.length / 80);
+                    currentTokens = pack.tokens;
+                }
+                
+                // Track filenames
+                if (!pack.filenames) pack.filenames = [];
+                if (!pack.filenames.includes(file.name)) pack.filenames.push(file.name);
+                
+                rawTextWords = rawTextWords.concat(newWords);
+                totalEncodedCoordinates = Math.ceil(rawTextWords.length / 80);
+                pack.tokens = currentTokens + Math.ceil(newWords.length * 1.33);
+
+                // LOCAL RIF BRAIN (Instant)
+                for (let t = startT; t < totalEncodedCoordinates; t++) {
+                    const progress = 10 + (90 * (t - startT) / (totalEncodedCoordinates - startT));
+                    setIngestStatus(true, `Memorizing Token ${t+1} of ${totalEncodedCoordinates}...`, "Loading Document", progress);
+                    await new Promise(r => requestAnimationFrame(r));
+                    const temporalString = rawTextWords.slice(t * 80, t * 80 + 120).join(' ');
+                    if (temporalString.trim().length === 0) continue;
+                    const output = await extractor(temporalString, { pooling: 'mean', normalize: true });
+                    LogicShield.writeRIF(kalpanaState, t, Array.from(output.data), _b0);
+                }
+
+                pack.stateRe = kalpanaState.stateRe; pack.stateIm = kalpanaState.stateIm;
+                pack._o3 = kalpanaState._o3; pack._p4 = kalpanaState._p4;
+                pack.rawTextWords = rawTextWords;
+                await savePack(pack);
+                
+                if(pack.id === activePackId || isAppendingToPackId === 'NEW') { await loadActivePack(pack.id); }
+                setIngestStatus(false);
+                const remainingTokens = 3000000 - pack.tokens;
+                addMessage("Kalpanā", `I have successfully memorized your document which contains ${pack.tokens.toLocaleString()} number of tokens and it took only 6MB RAM and you can still add ${remainingTokens.toLocaleString()} remaining number of tokens out of 3 mil to put inside 6mb space.`);
+                if (!document.getElementById('packs-overlay').classList.contains('hidden')) { await renderKnowledgePacks(); }
+                isAppendingToPackId = null;
+            } catch (err) {
+                console.error(err); setIngestError(err.message); isAppendingToPackId = null;
+            }
+        }
+
+        async function handleQuery() {
+            const queryInput = document.getElementById('query-input');
+            let query = queryInput.value.trim();
+            
+            if ((!query && !window.attachedImage) || isRetrieving) return;
+            if (!kalpanaState) {
+                addMessage("Kalpanā", "I need you to activate a Knowledge Pack before we begin. Please select one from the menu.");
+                return;
+            }
+
+            isRetrieving = true;
+            setRetrieveButtonMode(true);
+            const startTime = performance.now();
+
+            let imageHtml = "";
+            let imageData = null;
+            let imageMimeType = null;
+            if (window.attachedImage) {
+                imageHtml = `<img src="${window.attachedImage.uri}" class="max-w-xs rounded-xl mb-3 border border-sky-700/50 object-cover shadow-lg max-h-48">`;
+                imageData = window.attachedImage.data;
+                imageMimeType = window.attachedImage.mimeType;
+                
+                document.getElementById('btn-remove-image').click();
+            }
+
+            let displayQuery = query;
+            if (!query && window.attachedImage) {
+                query = "Analyze this image and relate it to the active Knowledge Pack.";
+                displayQuery = "Analyzing Image...";
+            }
+
+            const queryDiv = addMessage("User", displayQuery, imageHtml);
+            queryInput.value = '';
+
+            const animatedDots = `<div class="flex space-x-1 items-center h-4 py-1"><div class="w-1.5 h-1.5 bg-sky-400 rounded-full typing-dot"></div><div class="w-1.5 h-1.5 bg-sky-400 rounded-full typing-dot"></div><div class="w-1.5 h-1.5 bg-sky-400 rounded-full typing-dot"></div></div>`;
+            const responseDiv = addMessage("Kalpanā", animatedDots);
+
+            try {
+                // 1. Embed Query
+                const qOutput = await extractor(query, { pooling: 'mean', normalize: true });
+                const qVector = Array.from(qOutput.data).slice(0, _d1); 
+                
+                // 2. Proprietary Holographic Sweep (RIF)
+                const resonances = [];
+                const totalT = Math.ceil(rawTextWords.length / 80);
+
+                for (let t = 0; t < totalT; t++) {
+                    const shardStart = performance.now();
+                    const score = LogicShield.readRIF(kalpanaState, t, qVector, _b0);
+                    resonances.push({ t, score, latency: performance.now() - shardStart });
+                }
+
+                resonances.sort((a, b) => b.score - a.score);
+                const topPeaks = resonances.slice(0, 10); topPeaks.sort((a, b) => a.t - b.t);
+                const evidence = topPeaks.map(p => ({ text: rawTextWords.slice(p.t * 80, p.t * 80 + 120).join(" "), latency: p.latency }));
+                const searchLatency = Math.round(performance.now() - startTime);
+
+                if (evidence.length === 0) {
+                    responseDiv.innerText = "Kalpanā Alert: I couldn't find any relevant evidence in the active knowledge pack.";
+                    setRetrieveButtonMode(false);
+                    isRetrieving = false;
+                    return;
+                }
+
+                // Show Evidence immediately in UI
+                const evidenceHtml = evidence.map((ev, i) => `
+                    <div class="mb-3 border-l-2 border-sky-500/30 pl-3">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sky-400 font-bold text-[10px] uppercase tracking-tighter">Shard ${i+1} Retrieval</span>
+                            <span class="text-[9px] text-slate-500 font-mono">${ev.latency.toFixed(4)} ms</span>
+                        </div>
+                        <span class="text-slate-300 text-sm leading-relaxed block">${ev.text}</span>
+                    </div>
+                `).join("");
+                
+                addMessage("Kalpanā (Evidence)", `
+                    <details class="group mt-2">
+                        <summary class="cursor-pointer mb-2 text-[10px] text-slate-400 italic font-semibold border-b border-white/5 pb-2 flex justify-between items-center outline-none list-none">
+                            <span class="flex items-center">
+                                <svg class="w-3 h-3 mr-1 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                Kalpanā's Recalled Evidence (Click to expand)
+                            </span>
+                            <span class="text-emerald-400 font-mono bg-emerald-400/10 px-2 py-0.5 rounded">Total Latency: ${searchLatency.toFixed(1)} ms</span>
+                        </summary>
+                        <div class="pt-2">
+                            ${evidenceHtml}
+                        </div>
+                    </details>
+                `);
+
+                const isGemini = document.getElementById('mode-toggle')?.checked ?? true;
+                
+                let answer;
+                if (isGemini) {
+                    // 3. Call Gemini via Firebase Functions
+                    const kalpanaChat = firebase.functions().httpsCallable('kalpanaChat');
+                    const { data } = await kalpanaChat({ query, evidence: evidence.map(e => e.text), imageData, imageMimeType });
+                    answer = data.answer;
+                } else {
+                    // Kalpanā Only Mode - Return Raw Evidence
+                    answer = `Based on my holographic scan, here is the most relevant snippet:\n\n"${evidence[0].text}"`;
+                }
+
+                // Metrics for Voice and UI
+                const evidenceText = evidence.map(e => e.text).join(" ");
+                const evidenceTokens = Math.ceil(evidenceText.length / 4);
+
+                const efficiencyHtml = getEfficiencyHtml(searchLatency, evidenceTokens);
+                if (typeof marked !== 'undefined') {
+                    responseDiv.innerHTML = `<div class="markdown-content">${marked.parse(answer)}</div> ${efficiencyHtml}`;
+                } else {
+                    responseDiv.innerHTML = answer.replace(/\n/g, '<br/>') + efficiencyHtml;
+                }
+
+                const totalTokens = Math.ceil(rawTextWords.join(" ").length / 4);
+
+                // Speak the results
+                if (isVoiceOutputEnabled && typeof speakResponse === 'function') {
+                    speakResponse(answer, evidence.length, searchLatency, evidenceTokens, totalTokens, isGemini);
+                }
+                
+                // Show Query Efficiency
+
+                setRetrieveButtonMode(false);
+                isRetrieving = false;
+                
+            } catch (err) {
+                console.error(err);
+                responseDiv.innerText = "ENGINE ERROR: " + err.message;
+                setRetrieveButtonMode(false);
+                isRetrieving = false;
+            }
+        }
+
+        function getEfficiencyHtml(latency, sentTokens) {
+            const totalPackTokens = Math.ceil(rawTextWords.length * 1.33);
+            const savedCurrentQuery = Math.max(0, totalPackTokens - sentTokens);
+            const ramMultiplier = 8192 / 6.3; 
+            const savedMWh = (297 * (latency / 1000)) / 3.6; 
+
+            return `
+                <details class="mt-4 border-t border-white/5 pt-4 group">
+                    <summary class="cursor-pointer text-[10px] text-indigo-400/60 uppercase tracking-widest font-bold flex items-center space-x-2 outline-none list-none hover:text-indigo-400 transition-colors">
+                        <svg class="w-3 h-3 transition-transform group-open:rotate-90" fill="currentColor" viewBox="0 0 20 20"><path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"></path></svg>
+                        <span>Recall Efficiency Facts</span>
+                    </summary>
+                    <div class="mt-3 grid grid-cols-2 gap-4 text-[10px] text-slate-500 font-medium">
+                        <div class="space-y-1 tooltip-trigger">
+                            <div class="flex items-center space-x-1">
+                                <p class="text-slate-400 uppercase tracking-tighter">Tokens Suppressed</p>
+                                <svg class="w-2.5 h-2.5 text-slate-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                            </div>
+                            <p class="text-sky-400 font-mono text-xs">${savedCurrentQuery.toLocaleString()}</p>
+                            <span class="tooltip-content"><span class="tooltip-title">Tokens Suppressed</span>Total tokens filtered locally by Kalpanā's RIF engine that were never sent to the cloud.</span>
+                        </div>
+                        <div class="space-y-1 tooltip-trigger">
+                            <div class="flex items-center space-x-1">
+                                <p class="text-slate-400 uppercase tracking-tighter">Cloud Payload</p>
+                                <svg class="w-2.5 h-2.5 text-slate-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                            </div>
+                            <p class="text-indigo-400 font-mono text-xs">${sentTokens.toLocaleString()}</p>
+                            <span class="tooltip-content"><span class="tooltip-title">Cloud Payload</span>The actual number of context tokens sent to the cloud for final inference after local recall.</span>
+                        </div>
+                        <div class="space-y-1 tooltip-trigger">
+                            <div class="flex items-center space-x-1">
+                                <p class="text-slate-400 uppercase tracking-tighter">RAM X-Factor</p>
+                                <svg class="w-2.5 h-2.5 text-slate-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                            </div>
+                            <p class="text-emerald-400 font-mono text-xs">${ramMultiplier.toFixed(0)}x</p>
+                            <span class="tooltip-content"><span class="tooltip-title">RAM X-Factor</span>The efficiency ratio of Kalpanā's fixed 6.3MB holographic memory compared to standard 8GB+ AI systems.</span>
+                        </div>
+                        <div class="space-y-1 tooltip-trigger">
+                            <div class="flex items-center space-x-1">
+                                <p class="text-slate-400 uppercase tracking-tighter">Power Saved</p>
+                                <svg class="w-2.5 h-2.5 text-slate-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                            </div>
+                            <p class="text-amber-400 font-mono text-xs">${savedMWh.toFixed(2)} mWh</p>
+                            <span class="tooltip-content"><span class="tooltip-title">Power Saved</span>Estimated energy saved by performing local RIF retrieval instead of brute-force cloud search.</span>
+                        </div>
+                    </div>
+                </details>
+            `;
+        }
+
+        // Helper UI/Extraction Functions
+        function toggleUIStatus(isActive, text = "") {
+            const spinner = document.getElementById('global-spinner');
+            const spinnerTxt = document.getElementById('spinner-text');
+            if (isActive) {
+                spinner.classList.remove('hidden');
+                spinnerTxt.innerText = text;
+            } else {
+                spinner.classList.add('hidden');
+            }
+        }
+
+        async function extractTextFromPDF(file) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            let fullText = "";
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                fullText += content.items.map(item => item.str).join(" ") + " ";
+            }
+            return fullText;
+        }
+
+        window.clearChat = async function() {
+            const confirmed = await showModal("Confirm Reset", "This will wipe the current session dialogue. Your Knowledge Packs will remain untouched.", true);
+            if(!confirmed) return;
+            const chatHistory = document.getElementById('chat-history');
+            chatHistory.innerHTML = '';
+            
+            const hour = new Date().getHours();
+            const greeting = hour < 12 ? 'Good morning' : (hour < 18 ? 'Good afternoon' : 'Good evening');
+            
+            if (activePackId) {
+                addMessage("Kalpanā", `${greeting}. I have cleared my short-term memory cache. I am ready to continue analyzing the active Knowledge Pack.`);
+            } else {
+                addMessage("Kalpanā", `${greeting}. This is Kalpanā. Please activate a Knowledge Pack from the menu to begin.`);
+            }
+        };
+
+        function addMessage(sender, text, imageHtml = "") {
+            const chatHistory = document.getElementById('chat-history');
+            const div = document.createElement('div');
+            div.className = `flex ${sender === 'User' ? 'justify-end' : 'justify-start'}`;
+            
+            let feedbackHtml = "";
+            if (sender.includes("Kalpanā")) {
+                feedbackHtml = `
+                    <div class="flex items-center space-x-2 mt-4 pt-3 border-t border-white/5 feedback-container">
+                        <span class="text-[9px] text-slate-500 uppercase tracking-tighter">Rate this answer:</span>
+                        <button onclick="submitFeedback('helpful', this)" class="text-slate-500 hover:text-emerald-400 transition-colors p-1" title="Helpful">
+                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" /></svg>
+                        </button>
+                        <button onclick="submitFeedback('unhelpful', this)" class="text-slate-500 hover:text-red-400 transition-colors p-1" title="Unhelpful">
+                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.106-1.79l-.05-.025A4 4 0 0011.057 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z" /></svg>
+                        </button>
+                    </div>
+                `;
+            }
+
+            div.innerHTML = `
+                <div class="${sender === 'User' ? 'bg-sky-900 border-sky-700' : 'bg-slate-800 border-white/5'} border rounded-2xl px-5 py-4 max-w-2xl text-sm shadow-lg">
+                    <span class="block text-[10px] font-bold uppercase mb-1 opacity-50">${sender}</span>
+                    ${imageHtml}
+                    <div class="leading-relaxed text-slate-200 msg-content">${text}</div>
+                    ${feedbackHtml}
+                </div>
+            `;
+            chatHistory.appendChild(div);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            return div.querySelector('.msg-content');
+        }
+
+        window.submitFeedback = function(rating, btn) {
+            const container = btn.closest('.feedback-container');
+            const icons = container.querySelectorAll('button');
+            icons.forEach(i => i.classList.add('pointer-events-none', 'opacity-30'));
+            
+            btn.classList.remove('opacity-30');
+            btn.classList.add('opacity-100', rating === 'helpful' ? 'text-emerald-400' : 'text-red-400');
+            
+            if (typeof gtag === 'function') {
+                gtag('event', 'kalpana_feedback', {
+                    'event_category': 'Engagement',
+                    'event_label': rating,
+                    'value': rating === 'helpful' ? 1 : 0
+                });
+            }
+            
+            const label = container.querySelector('span');
+            label.innerText = "Thanks!";
+            label.classList.add('text-indigo-400', 'font-bold');
+        };
+
+        function speakResponse(text, evidenceCount, searchTime, sentTokens, totalTokens, isGemini = true) {
+            if (!window.speechSynthesis) return;
+            window.speechSynthesis.cancel();
+            
+            let introText = "";
+            if (isGemini) {
+                introText = `I found ${evidenceCount} evidence segments from my memory in ${searchTime} milliseconds. I sent ${sentTokens} tokens to Gemini from your ${totalTokens} token document library. Here is the answer.`;
+            } else {
+                introText = `I found ${evidenceCount} evidence segments from my memory in ${searchTime} milliseconds. I am reciting the raw extracted data without cloud reasoning.`;
+            }
+            
+            const introUtterance = new SpeechSynthesisUtterance(introText);
+            const mainUtterance = new SpeechSynthesisUtterance(text);
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoice = voices.find(v => v.name.includes('Google UK English Female') || v.name.includes('Samantha')) || voices[0];
+            introUtterance.voice = preferredVoice; introUtterance.pitch = 1.1; introUtterance.rate = 1.0;
+            mainUtterance.voice = preferredVoice; mainUtterance.pitch = 1.0; mainUtterance.rate = 1.0;
+            window.speechSynthesis.speak(introUtterance);
+            window.speechSynthesis.speak(mainUtterance);
+        }
+
+        document.getElementById('btn-send').addEventListener('click', handleQuery);
+        document.getElementById('query-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleQuery(); });
+
+        window.attachedImage = null;
+
+        document.getElementById('btn-attach').addEventListener('click', () => {
+            document.getElementById('image-upload-input').click();
+        });
+
+        document.getElementById('image-upload-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const base64String = ev.target.result.split(',')[1];
+                window.attachedImage = {
+                    data: base64String,
+                    mimeType: file.type,
+                    uri: ev.target.result
+                };
+                
+                document.getElementById('image-preview-thumb').src = ev.target.result;
+                document.getElementById('image-preview-name').innerText = file.name;
+                document.getElementById('image-preview-container').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('btn-remove-image').addEventListener('click', () => {
+            window.attachedImage = null;
+            document.getElementById('image-upload-input').value = "";
+            document.getElementById('image-preview-container').classList.add('hidden');
+        });
+
+        let isVoiceOutputEnabled = false;
+        document.getElementById('btn-speaker')?.addEventListener('click', () => {
+            isVoiceOutputEnabled = !isVoiceOutputEnabled;
+            const btn = document.getElementById('btn-speaker');
+            const onIcon = document.getElementById('icon-speaker-on');
+            const offIcon = document.getElementById('icon-speaker-off');
+            if (isVoiceOutputEnabled) {
+                btn.classList.replace('text-slate-500', 'text-sky-400');
+                onIcon.classList.remove('hidden');
+                offIcon.classList.add('hidden');
+            } else {
+                btn.classList.replace('text-sky-400', 'text-slate-500');
+                onIcon.classList.add('hidden');
+                offIcon.classList.remove('hidden');
+                window.speechSynthesis?.cancel();
+            }
+        });
+
+        // Speech Recognition Setup
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.continuous = false; recognition.lang = 'en-US'; recognition.interimResults = false;
+            const voiceBtn = document.getElementById('btn-voice');
+            const micPulse = document.getElementById('mic-pulse');
+            const micOn = document.getElementById('icon-mic-on');
+            const micOff = document.getElementById('icon-mic-off');
+            
+            const setMicState = (active) => {
+                if(active) {
+                    micPulse.classList.remove('hidden');
+                    micOn.classList.remove('hidden');
+                    micOff.classList.add('hidden');
+                    document.getElementById('query-input').placeholder = "Listening...";
+                } else {
+                    micPulse.classList.add('hidden');
+                    micOn.classList.add('hidden');
+                    micOff.classList.remove('hidden');
+                    document.getElementById('query-input').placeholder = "Ask about the state...";
+                }
+            };
+
+            if (voiceBtn) {
+                voiceBtn.onclick = () => { recognition.start(); };
+                recognition.onstart = () => setMicState(true);
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('query-input').value = transcript;
+                    handleQuery();
+                    setMicState(false);
+                };
+                recognition.onerror = () => setMicState(false);
+                recognition.onend = () => setMicState(false);
+            }
+        }
+
+        document.getElementById('mode-toggle')?.addEventListener('change', (e) => {
+            const isGemini = e.target.checked;
+            const elK = document.getElementById('mode-kalpana');
+            const elQ = document.getElementById('mode-qwen');
+            if(isGemini) {
+                elQ.classList.replace('text-slate-500', 'text-indigo-400');
+                elK.classList.replace('text-indigo-400', 'text-slate-500');
+            } else {
+                elK.classList.replace('text-slate-500', 'text-indigo-400');
+                elQ.classList.replace('text-indigo-400', 'text-slate-500');
+            }
+        });
+
+        window.onload = () => {
+            initialize();
+
+            // PWA Installation Logic
+            let deferredPrompt;
+            const installBtn = document.getElementById('pwa-install-btn');
+            const installBtnSide = document.getElementById('pwa-install-btn-side');
+
+            // 1. Detect environment
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+            // 2. Initial detection
+            if (isMobile && !isStandalone) {
+                const authInstallSection = document.getElementById('mobile-install-section');
+                const sideInstallSection = document.getElementById('side-menu-install-section');
+                
+                if (authInstallSection) authInstallSection.classList.remove('hidden');
+                if (sideInstallSection) sideInstallSection.classList.remove('hidden');
+                
+                const isAndroid = /Android/i.test(navigator.userAgent);
+                if (!isAndroid) {
+                    // Force show for iOS (manual path)
+                    if (installBtn) installBtn.classList.remove('hidden');
+                    if (installBtnSide) installBtnSide.classList.remove('hidden');
+                }
+            }
+
+            // 3. Android/Chrome Automatic Prompt
+            window.addEventListener('beforeinstallprompt', (e) => {
+                console.log("Kalpanā: Android Install Prompt Ready");
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                if (!isStandalone) {
+                    if (installBtn) installBtn.classList.remove('hidden');
+                    if (installBtnSide) installBtnSide.classList.remove('hidden');
+                    
+                    const authInstallSection = document.getElementById('mobile-install-section');
+                    const sideInstallSection = document.getElementById('side-menu-install-section');
+                    if (authInstallSection) authInstallSection.classList.remove('hidden');
+                    if (sideInstallSection) sideInstallSection.classList.remove('hidden');
+                }
+            });
+
+            const handleInstallClick = async () => {
+                if (deferredPrompt) {
+                    if(typeof gtag === 'function') gtag('event', 'install_click', { 'app_name': 'Kalpana' });
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        if (installBtn) installBtn.classList.add('hidden');
+                        if (installBtnSide) installBtnSide.classList.add('hidden');
+                    }
+                    deferredPrompt = null;
+                } else {
+                    // If not ready, show a brief loading state in case it's just slow
+                    const originalText = installBtnSide ? installBtnSide.innerText : "Install App";
+                    if (installBtnSide) installBtnSide.innerText = "Verifying Engine...";
+                    
+                    setTimeout(() => {
+                        if (deferredPrompt) {
+                            handleInstallClick(); // Try again if it became ready
+                        } else {
+                            if (installBtnSide) installBtnSide.innerText = originalText;
+                            const isAndroid = /Android/i.test(navigator.userAgent);
+                            const title = isAndroid ? "Installation Guide" : "Install Kalpanā";
+                            const msg = isAndroid 
+                                ? "<div class='text-left space-y-3'><p>Chrome is still validating the PWA manifest. To install immediately:</p><ol class='list-decimal ml-5 space-y-2'><li>Tap the <b>three dots (⋮)</b> in the top right.</li><li>Select <b>'Install App'</b> or <b>'Add to Home Screen'</b>.</li></ol></div>"
+                                : "<div class='text-left space-y-3'><p>To install on iPhone:</p><ol class='list-decimal ml-5 space-y-2'><li>Tap the <b>Safari Share</b> icon (square with arrow).</li><li>Select <b>'Add to Home Screen'</b>.</li></ol></div>";
+                            showModal(title, msg, false);
+                        }
+                    }, 1500);
+                }
+            };
+
+            if (installBtn) installBtn.addEventListener('click', handleInstallClick);
+            if (installBtnSide) installBtnSide.addEventListener('click', handleInstallClick);
+
+            window.addEventListener('appinstalled', () => {
+                installBtn.classList.add('hidden');
+                deferredPrompt = null;
+            });
+
+            // --- AUTHENTICATION LOGIC ---
+            const authOverlay = document.getElementById('auth-overlay');
+            const btnLogin = document.getElementById('btn-login');
+            const authError = document.getElementById('auth-error');
+
+            // Force Local Persistence for Mobile/PWA stability
+            auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                .then(() => {
+                    auth.onAuthStateChanged(async (user) => {
+                        if (user) {
+                            authOverlay.classList.add('opacity-0');
+                            setTimeout(() => authOverlay.classList.add('hidden'), 500);
+                            
+                            document.getElementById('profile-img').src = user.photoURL || 'icon-192.png';
+                            document.getElementById('profile-name').innerText = user.displayName || user.email.split('@')[0];
+                            document.getElementById('profile-email').innerText = user.email;
+                        } else {
+                            try {
+                                const result = await auth.getRedirectResult();
+                                if (result && result.user) return; 
+                            } catch (error) {
+                                console.error("Redirect Auth Error:", error);
+                                if (error.code === 'auth/internal-error' || error.code === 'auth/network-request-failed') {
+                                    authError.innerText = "Connection issue. Please check your data/wifi.";
+                                } else {
+                                    authError.innerText = "Session lost. Try clicking 'Secure Login' again.";
+                                }
+                                authError.classList.remove('hidden');
+                            }
+
+                            authOverlay.classList.remove('hidden');
+                            setTimeout(() => authOverlay.classList.remove('opacity-0'), 10);
+                        }
+                    });
+                });
+
+            btnLogin.addEventListener('click', async () => {
+                authError.classList.add('hidden');
+                const provider = new firebase.auth.GoogleAuthProvider();
+                provider.setCustomParameters({ prompt: 'select_account' });
+                
+                const ua = navigator.userAgent;
+                const isAndroid = /Android/i.test(ua);
+                const isIOS = /iPhone|iPad|iPod/i.test(ua);
+                
+                try {
+                    if (isAndroid) {
+                        // Android works best with Redirect
+                        await auth.signInWithRedirect(provider);
+                    } else if (isIOS) {
+                        // iOS Standalone mode has storage bugs with Redirect, Popup is safer
+                        await auth.signInWithPopup(provider);
+                    } else {
+                        // Desktop
+                        await auth.signInWithPopup(provider);
+                    }
+                } catch (error) {
+                    console.error("Auth Click Error:", error);
+                    authError.innerText = "Login Blocked: Ensure popups are allowed in your browser settings.";
+                    authError.classList.remove('hidden');
+                }
+            });
+
+            // --- HAMBURGER MENU WIRING ---
+            const btnHamburger = document.getElementById('btn-hamburger');
+            const sideMenuOverlay = document.getElementById('side-menu-overlay');
+            const sideMenu = document.getElementById('side-menu');
+            const btnCloseMenu = document.getElementById('btn-close-menu');
+            const btnThemeToggle = document.getElementById('btn-theme-toggle');
+            const btnLogoutMenu = document.getElementById('btn-logout-menu');
+
+            if (btnHamburger) {
+                btnHamburger.addEventListener('click', () => {
+                    sideMenuOverlay.classList.remove('hidden');
+                    setTimeout(() => sideMenu.classList.remove('-translate-x-full'), 10);
+                });
+            }
+
+            if (btnCloseMenu) {
+                btnCloseMenu.addEventListener('click', () => {
+                    sideMenu.classList.add('-translate-x-full');
+                    setTimeout(() => sideMenuOverlay.classList.add('hidden'), 300);
+                });
+            }
+
+            if (sideMenuOverlay) {
+                sideMenuOverlay.addEventListener('click', (e) => {
+                    if(e.target === sideMenuOverlay) btnCloseMenu.click();
+                });
+            }
+
+            if (btnLogoutMenu) {
+                btnLogoutMenu.addEventListener('click', async () => {
+                    await auth.signOut();
+                    window.location.reload(); 
+                });
+            }
+
+            // Service Worker Registration & Update Detection
+            if ('serviceWorker' in navigator) {
+                // We add a version query to the SW itself to force a re-fetch
+                navigator.serviceWorker.register(`./sw.js?v=${APP_VERSION}`)
+                    .then(reg => {
+                        console.log('SW registered', reg);
+                        reg.addEventListener('updatefound', () => {
+                            const newWorker = reg.installing;
+                            newWorker.addEventListener('statechange', async () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // A new service worker is available; notify user
+                                    const confirmed = await showModal("Security Update", `A new secure version of Kalpanā (v${APP_VERSION}) is ready. You must update to continue using the proprietary engine.`, true);
+                                    if (confirmed) window.location.reload();
+                                }
+                            });
+                        });
+                    })
+                    .catch(err => console.log('SW failed', err));
+            }
+        };
+    </script>
+
+</body>
+</html>
