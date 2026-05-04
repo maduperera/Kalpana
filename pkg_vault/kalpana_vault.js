@@ -158,4 +158,4 @@ export const {
     else { return await globalThis.WebAssembly.compileStreaming(globalThis.fetch(url)); }
   })(), {
   }
-))(new URL("release.wasm", import.meta.url));
+))(new URL("kalpana_vault.wasm", import.meta.url));
