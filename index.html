@@ -391,6 +391,17 @@
         import { pipeline } from "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.16.0";
 
         const APP_VERSION = "3.0.1";
+        const USE_WASM = false; // Set to true once you have compiled your .wasm file!
+        
+        let wasmEngine = null;
+        if (USE_WASM) {
+            import("./pkg_vault/kalpana_vault.js").then(module => {
+                wasmEngine = module;
+                console.log("Kalpanā Vault: Binary Engine Initialized v" + wasmEngine.getVersion());
+            }).catch(e => {
+                console.warn("WASM Load Failed, falling back to JS Shield.", e);
+            });
+        }
         const _b0 = (1 << 11); 
         const _d1 = (0x180); 
 
@@ -699,11 +710,19 @@
                     return;
                 }
                 
-                kalpanaState = new LogicShield.KalpanaState(_b0, _d1);
-                kalpanaState.stateRe.set(pack.stateRe);
-                kalpanaState.stateIm.set(pack.stateIm);
-                kalpanaState._o3.set(pack._o3 || kalpanaState._o3);
-                kalpanaState._p4.set(pack._p4 || kalpanaState._p4);
+                if (USE_WASM && wasmEngine) {
+                    wasmEngine.initEngine(_b0);
+                    kalpanaState = { isWASM: true }; 
+                } else {
+                    kalpanaState = new LogicShield.KalpanaState(_b0, _d1);
+                }
+
+                if (!kalpanaState.isWASM) {
+                    kalpanaState.stateRe.set(pack.stateRe);
+                    kalpanaState.stateIm.set(pack.stateIm);
+                    kalpanaState._o3.set(pack._o3 || kalpanaState._o3);
+                    kalpanaState._p4.set(pack._p4 || kalpanaState._p4);
+                }
 
                 rawTextWords = pack.rawTextWords;
                 totalEncodedCoordinates = Math.ceil(rawTextWords.length / 80);
@@ -897,7 +916,13 @@
 
                 let pack; let startT = 0; let currentTokens = 0;
                 if (isAppendingToPackId === 'NEW') {
-                    kalpanaState = new LogicShield.KalpanaState(_b0, _d1); rawTextWords = [];
+                    if (USE_WASM && wasmEngine) {
+                        wasmEngine.initEngine(_b0);
+                        kalpanaState = { isWASM: true, stateRe: new Float32Array(_b0 * _d1), stateIm: new Float32Array(_b0 * _d1), _o3: new Float32Array(_b0), _p4: new Float32Array(_b0) };
+                    } else {
+                        kalpanaState = new LogicShield.KalpanaState(_b0, _d1);
+                    }
+                    rawTextWords = [];
                     pack = { id: 'kp-' + Date.now(), title: window.pendingPackMeta.title, specialization: window.pendingPackMeta.spec, tokens: 0, createdAt: Date.now() };
                 } else {
                     pack = await getPack(isAppendingToPackId);
@@ -924,7 +949,11 @@
                     const temporalString = rawTextWords.slice(t * 80, t * 80 + 120).join(' ');
                     if (temporalString.trim().length === 0) continue;
                     const output = await extractor(temporalString, { pooling: 'mean', normalize: true });
-                    LogicShield.writeRIF(kalpanaState, t, Array.from(output.data), _b0);
+                    if (USE_WASM && wasmEngine) {
+                        wasmEngine.writeRIF(t, new Float32Array(output.data));
+                    } else {
+                        LogicShield.writeRIF(kalpanaState, t, Array.from(output.data), _b0);
+                    }
                 }
 
                 pack.stateRe = kalpanaState.stateRe; pack.stateIm = kalpanaState.stateIm;
@@ -991,7 +1020,12 @@
 
                 for (let t = 0; t < totalT; t++) {
                     const shardStart = performance.now();
-                    const score = LogicShield.readRIF(kalpanaState, t, qVector, _b0);
+                    let score;
+                    if (USE_WASM && wasmEngine) {
+                        score = wasmEngine.readRIF(t, qVector);
+                    } else {
+                        score = LogicShield.readRIF(kalpanaState, t, qVector, _b0);
+                    }
                     resonances.push({ t, score, latency: performance.now() - shardStart });
                 }
 

@@ -1,20 +1,21 @@
-# SECURITY LOCKDOWN
+# 🛡️ KALPANĀ SECURITY LOCKDOWN
+# These files NEVER leave your computer
 shield.js
+rust_engine/
+vault_engine/
 functions/
+functions.zip
 .firebase/
 firebase-debug.log
 .firebaserc
+.env
+.DS_Store
 
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Node
+# 📦 PUBLIC ASSETS
+# These are the ONLY things that go to GitHub
+# (Everything else is blocked by default)
 node_modules/
 dist/
 build/
-.env
-.DS_Store
+logs/
+*.log
