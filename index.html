@@ -712,16 +712,11 @@
                 
                 if (USE_WASM && wasmEngine) {
                     wasmEngine.initEngine(_b0, _d1, 10.0, 3e-4, 0.35);
+                    wasmEngine.setState(pack.stateRe, pack.stateIm, pack._o3, pack._p4);
                     kalpanaState = { isWASM: true }; 
                 } else {
-                    kalpanaState = new LogicShield.KalpanaState(_b0, _d1);
-                }
-
-                if (!kalpanaState.isWASM) {
-                    kalpanaState.stateRe.set(pack.stateRe);
-                    kalpanaState.stateIm.set(pack.stateIm);
-                    kalpanaState._o3.set(pack._o3 || kalpanaState._o3);
-                    kalpanaState._p4.set(pack._p4 || kalpanaState._p4);
+                    await showModal("Engine Error", "Secure Engine (WASM) is not available.");
+                    return;
                 }
 
                 rawTextWords = pack.rawTextWords;
@@ -920,14 +915,20 @@
                         wasmEngine.initEngine(_b0, _d1, 10.0, 3e-4, 0.35);
                         kalpanaState = { isWASM: true, stateRe: new Float32Array(_b0 * _d1), stateIm: new Float32Array(_b0 * _d1), _o3: new Float32Array(_b0), _p4: new Float32Array(_b0) };
                     } else {
-                        kalpanaState = new LogicShield.KalpanaState(_b0, _d1);
+                        await showModal("Engine Error", "Secure Engine (WASM) failed to initialize. Cannot create new Knowledge Pack.");
+                        return;
                     }
                     rawTextWords = [];
                     pack = { id: 'kp-' + Date.now(), title: window.pendingPackMeta.title, specialization: window.pendingPackMeta.spec, tokens: 0, createdAt: Date.now() };
                 } else {
                     pack = await getPack(isAppendingToPackId);
-                    kalpanaState = new LogicShield.KalpanaState(_b0, _d1);
-                    kalpanaState.stateRe.set(pack.stateRe); kalpanaState.stateIm.set(pack.stateIm);
+                    if (USE_WASM && wasmEngine) {
+                        wasmEngine.initEngine(_b0, _d1, 10.0, 3e-4, 0.35);
+                        wasmEngine.setState(pack.stateRe, pack.stateIm, pack._o3, pack._p4);
+                        kalpanaState = { isWASM: true };
+                    } else {
+                        throw new Error("Engine not ready");
+                    }
                     rawTextWords = [...pack.rawTextWords];
                     startT = Math.ceil(rawTextWords.length / 80);
                     currentTokens = pack.tokens;
@@ -951,13 +952,15 @@
                     const output = await extractor(temporalString, { pooling: 'mean', normalize: true });
                     if (USE_WASM && wasmEngine) {
                         wasmEngine.writeRIF(t, new Float32Array(output.data));
-                    } else {
-                        LogicShield.writeRIF(kalpanaState, t, Array.from(output.data), _b0);
                     }
                 }
 
-                pack.stateRe = kalpanaState.stateRe; pack.stateIm = kalpanaState.stateIm;
-                pack._o3 = kalpanaState._o3; pack._p4 = kalpanaState._p4;
+                if (USE_WASM && wasmEngine) {
+                    pack.stateRe = wasmEngine.getStateRe();
+                    pack.stateIm = wasmEngine.getStateIm();
+                    pack._o3 = wasmEngine.getStateO3();
+                    pack._p4 = wasmEngine.getStateP4();
+                }
                 pack.rawTextWords = rawTextWords;
                 await savePack(pack);
                 
@@ -1024,7 +1027,7 @@
                     if (USE_WASM && wasmEngine) {
                         score = wasmEngine.readRIF(t, qVector);
                     } else {
-                        score = LogicShield.readRIF(kalpanaState, t, qVector, _b0);
+                        score = 0; // Skip if engine not ready
                     }
                     resonances.push({ t, score, latency: performance.now() - shardStart });
                 }
