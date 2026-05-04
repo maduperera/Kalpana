@@ -1,10 +1,10 @@
-# <img src="./icon-192.png" width="48" height="48" align="center" style="border-radius: 12px;"> Kalpanā v3.0.1 | Official User Manual
+# <img src="./icon-192.png" width="48" height="48" align="center" style="border-radius: 12px;"> Kalpanā v3.0.3 | Official User Manual
 ### *Advanced Knowledge Retrieval System*
 
 ---
 
 ## 🌟 Introduction
-Welcome to **Kalpanā v3.0.1**, a high-performance Progressive Web App (PWA) developed by **Vijñāna AI**. Kalpanā allows you to manage large datasets on any device with a fixed memory footprint and high-speed semantic retrieval.
+Welcome to **Kalpanā v3.0.3**, a high-performance Progressive Web App (PWA) developed by **Vijñāna AI**. Kalpanā allows you to manage large datasets on any device with a fixed memory footprint and high-speed semantic retrieval.
 
 ---
 
