@@ -1282,9 +1282,18 @@
                 `;
             }
 
+            let displaySender = sender;
+            if (sender === 'User') {
+                const user = firebase.auth().currentUser;
+                if (user) {
+                    const userName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+                    displaySender = userName.charAt(0).toUpperCase() + userName.slice(1);
+                }
+            }
+
             div.innerHTML = `
                 <div class="${sender === 'User' ? 'bg-sky-900 border-sky-700' : 'bg-slate-800 border-white/5'} border rounded-2xl px-5 py-4 max-w-2xl text-sm shadow-lg">
-                    <span class="block text-[10px] font-bold uppercase mb-1 opacity-50">${sender}</span>
+                    <span class="block text-[10px] font-bold uppercase mb-1 opacity-50">${displaySender}</span>
                     ${imageHtml}
                     <div class="leading-relaxed text-slate-200 msg-content">${text}</div>
                     ${feedbackHtml}
