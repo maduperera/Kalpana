@@ -6,6 +6,11 @@
 ## 🌟 Introduction
 Welcome to **Kalpanā v3.0.3**, a high-performance Progressive Web App (PWA) developed by **Vijñāna AI**. Kalpanā allows you to manage large datasets on any device with a fixed memory footprint and high-speed semantic retrieval.
 
+### 🧠 The Kalpanā Advantage: Small Footprint & LLM Token Reduction
+When working with massive documents (like complex PDFs) or long-running conversations, sending all that context to an LLM like **Gemini** consumes a massive amount of tokens, increasing costs and reducing response speed. 
+
+Kalpanā solves this by storing your PDFs and conversational history in a highly compressed, **"small footprint"** holographic RIF matrix. Instead of overwhelming the LLM with the entire document, Kalpanā seamlessly acts as a semantic filter, extracting and passing *only* the exact relevant chunks needed. This drastically **reduces the number of tokens passed to Gemini**, lowering costs while maintaining 100% contextual accuracy and privacy on your device.
+
 ---
 
 ## 📲 Quick Access & Installation
