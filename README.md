@@ -11,6 +11,9 @@ When working with massive documents (like complex PDFs) or long-running conversa
 
 Kalpanā solves this by storing your PDFs and conversational history in a highly compressed, **"small footprint"** holographic RIF matrix. Instead of overwhelming the LLM with the entire document, Kalpanā seamlessly acts as a semantic filter, extracting and passing *only* the exact relevant chunks needed. This drastically **reduces the number of tokens passed to Gemini**, lowering costs while maintaining 100% contextual accuracy and privacy on your device.
 
+### 🏗️ Architecture Diagram
+![Kalpanā Architecture Diagram](./kalpana_architecture.png)
+
 ---
 
 ## 📲 Quick Access & Installation
