@@ -30,12 +30,12 @@ Scan this QR code to open Kalpanā instantly on your smartphone:
 To install the app on your home screen for a full-screen native experience:
 
 ### **1. Android (Chrome)**
-*   Open the [Live URL](https://kalpanapro-2026.web.app) in **Chrome**.
+*   Open the [Live URL](https://maduperera.github.io/Kalpana/) in **Chrome**.
 *   Tap the **"Install App"** button in the side menu or login screen.
 *   Launch directly from your home screen.
 
 ### **2. iPhone / iPad (Safari)**
-*   Open the [Live URL](https://kalpanapro-2026.web.app) in **Safari**.
+*   Open the [Live URL](https://maduperera.github.io/Kalpana/) in **Safari**.
 *   Tap the **Share** button (Square with Up Arrow) at the bottom.
 *   Select **"Add to Home Screen"**.
 *   Launch from your home screen for Standalone Mode.
