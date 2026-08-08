@@ -1135,12 +1135,14 @@
                 
                 let answer;
                 if (isGemini) {
-                    // 3. Call Gemini via Firebase Functions (allows general chat when evidence is empty)
+                    const evidencePayload = (evidence.length > 0 && evidence[0].text.trim().length > 0)
+                        ? evidence.map(e => e.text)
+                        : ["GENERAL CONVERSATION MODE: Answer the user's question directly, accurately, and thoroughly using your full general knowledge."];
+
                     const kalpanaChat = firebase.functions().httpsCallable('kalpanaChat');
                     const { data } = await kalpanaChat({ 
                         query, 
-                        evidence: evidence.map(e => e.text), 
-                        isGeneralChat: (evidence.length === 0),
+                        evidence: evidencePayload, 
                         imageData, 
                         imageMimeType 
                     });
