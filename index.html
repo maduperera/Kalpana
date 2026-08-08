@@ -1135,13 +1135,21 @@
                 
                 let answer;
                 if (isGemini) {
-                    // 3. Call Gemini via Firebase Functions
+                    // 3. Call Gemini via Firebase Functions (allows general chat when evidence is empty)
                     const kalpanaChat = firebase.functions().httpsCallable('kalpanaChat');
-                    const { data } = await kalpanaChat({ query, evidence: evidence.map(e => e.text), imageData, imageMimeType });
+                    const { data } = await kalpanaChat({ 
+                        query, 
+                        evidence: evidence.map(e => e.text), 
+                        isGeneralChat: (evidence.length === 0),
+                        imageData, 
+                        imageMimeType 
+                    });
                     answer = data.answer;
                 } else {
                     // Kalpanā Only Mode - Return Raw Evidence
-                    answer = `Based on my holographic scan, here is the most relevant snippet:\n\n"${evidence[0].text}"`;
+                    answer = (evidence.length > 0 && evidence[0].text.trim().length > 0)
+                        ? `Based on my holographic scan, here is the most relevant snippet:\n\n"${evidence[0].text}"`
+                        : `I have processed your message into my RIF memory matrix.`;
                 }
 
                 // Metrics for Voice and UI
@@ -1167,14 +1175,51 @@
                     responseDiv.innerHTML = `<div class="answer-content raw-content">${answer.replace(/\n/g, '<br/>')}</div> ${copyBtnHtml} ${efficiencyHtml}`;
                 }
 
+                // ── CORE: Write turn (Query + LLM Answer) into RIF memory in-place ──
+                try {
+                    const turnText = `User: ${query}\nAssistant: ${answer}`;
+                    const turnWords = turnText.split(/\s+/).filter(w => w.length > 0);
+                    const turnStartT = Math.ceil(rawTextWords.length / 80);
+                    rawTextWords = rawTextWords.concat(turnWords);
+                    const newTotalT = Math.ceil(rawTextWords.length / 80);
+
+                    for (let t = turnStartT; t < newTotalT; t++) {
+                        const chunkStr = rawTextWords.slice(t * 80, t * 80 + 120).join(' ');
+                        if (chunkStr.trim().length > 0) {
+                            const vecOut = await extractor(chunkStr, { pooling: 'mean', normalize: true });
+                            if (USE_WASM && wasmEngine) {
+                                wasmEngine.writeRIF(t, new Float32Array(vecOut.data));
+                            }
+                        }
+                    }
+
+                    if (activePackId) {
+                        const packTitle = activePackId === 'kp-general-chat' ? "General Chat Memory Pack" : (window.pendingPackMeta?.title || "Knowledge Pack");
+                        const packSpec = activePackId === 'kp-general-chat' ? "General Knowledge & Conversation" : (window.pendingPackMeta?.spec || "General");
+                        savePack({
+                            id: activePackId,
+                            title: packTitle,
+                            specialization: packSpec,
+                            tokens: Math.ceil(rawTextWords.length * 1.33),
+                            createdAt: Date.now(),
+                            rawTextWords,
+                            stateRe: wasmEngine ? wasmEngine.getStateRe() : kalpanaState.stateRe,
+                            stateIm: wasmEngine ? wasmEngine.getStateIm() : kalpanaState.stateIm,
+                            _o3: kalpanaState._o3 || new Float32Array(_b0),
+                            _p4: kalpanaState._p4 || new Float32Array(_b0)
+                        }).catch(e => console.error("Auto pack save warning:", e));
+                        renderKnowledgePacks().catch(e => console.error("Pack render error:", e));
+                    }
+                } catch (memErr) {
+                    console.error("RIF turn memory write warning:", memErr);
+                }
+
                 const totalTokens = Math.ceil(rawTextWords.join(" ").length / 4);
 
                 // Speak the results
                 if (isVoiceOutputEnabled && typeof speakResponse === 'function') {
                     speakResponse(answer, evidence.length, searchLatency, evidenceTokens, totalTokens, isGemini);
                 }
-                
-                // Show Query Efficiency
 
                 setRetrieveButtonMode(false);
                 isRetrieving = false;
