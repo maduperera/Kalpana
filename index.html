@@ -1135,9 +1135,11 @@
                 
                 let answer;
                 if (isGemini) {
-                    const evidencePayload = (evidence.length > 0 && evidence[0].text.trim().length > 0)
-                        ? evidence.map(e => e.text)
-                        : ["GENERAL CONVERSATION MODE: Answer the user's question directly, accurately, and thoroughly using your full general knowledge."];
+                    const extractedTextList = evidence.filter(e => e.text && e.text.trim().length > 0).map(e => e.text);
+                    const evidencePayload = [
+                        ...extractedTextList,
+                        "INSTRUCTION: Use the above recalled context/document evidence if relevant. If the recalled context does not contain the complete answer to the user's question, answer fully, accurately, and thoroughly using your full general knowledge base."
+                    ];
 
                     const kalpanaChat = firebase.functions().httpsCallable('kalpanaChat');
                     const { data } = await kalpanaChat({ 
