@@ -502,7 +502,7 @@
                     userName = userName.charAt(0).toUpperCase() + userName.slice(1);
                 }
                 const greetingText = userName ? `${greeting} ${userName}.` : `${greeting}.`;
-                addMessage("Kalpanā", `${greetingText} This is Kalpanā. Please activate a Knowledge Pack from the menu to begin.`);
+                addMessage("Kalpanā", `${greetingText} Welcome to Kalpanā! Type a message to chat, or select/create a Knowledge Pack from the menu.`);
 
             } catch (e) {
                 console.error(e);
@@ -1022,10 +1022,17 @@
             const queryInput = document.getElementById('query-input');
             let query = queryInput.value.trim();
             
-            if ((!query && !window.attachedImage) || isRetrieving) return;
             if (!kalpanaState) {
-                addMessage("Kalpanā", "I need you to activate a Knowledge Pack before we begin. Please select one from the menu.");
-                return;
+                if (USE_WASM && wasmEngine) {
+                    wasmEngine.initEngine(_b0, _d1, 10.0, 3e-4, 0.35);
+                    kalpanaState = { isWASM: true, stateRe: new Float32Array(_b0 * _d1), stateIm: new Float32Array(_b0 * _d1), _o3: new Float32Array(_b0), _p4: new Float32Array(_b0) };
+                    rawTextWords = [];
+                    activePackId = 'kp-general-chat';
+                    console.log("✅ Auto-initialized General Chat Memory Pack");
+                } else {
+                    addMessage("Kalpanā", "I need you to activate a Knowledge Pack before we begin. Please select one from the menu.");
+                    return;
+                }
             }
 
             isRetrieving = true;
@@ -1263,7 +1270,7 @@
             if (activePackId) {
                 addMessage("Kalpanā", `${greetingText} I have cleared my short-term memory cache. I am ready to continue analyzing the active Knowledge Pack.`);
             } else {
-                addMessage("Kalpanā", `${greetingText} This is Kalpanā. Please activate a Knowledge Pack from the menu to begin.`);
+                addMessage("Kalpanā", `${greetingText} Welcome to Kalpanā! Type a message to chat, or select/create a Knowledge Pack from the menu.`);
             }
         };
 
