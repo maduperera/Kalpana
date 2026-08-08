@@ -1028,7 +1028,23 @@
                     kalpanaState = { isWASM: true, stateRe: new Float32Array(_b0 * _d1), stateIm: new Float32Array(_b0 * _d1), _o3: new Float32Array(_b0), _p4: new Float32Array(_b0) };
                     rawTextWords = [];
                     activePackId = 'kp-general-chat';
-                    console.log("✅ Auto-initialized General Chat Memory Pack");
+                    
+                    // Auto-save pack so it appears in Knowledge Packs list and can be exported!
+                    const genPack = {
+                        id: activePackId,
+                        title: "General Chat Memory Pack",
+                        specialization: "General Knowledge & Conversation",
+                        tokens: 0,
+                        createdAt: Date.now(),
+                        rawTextWords: [],
+                        stateRe: kalpanaState.stateRe,
+                        stateIm: kalpanaState.stateIm,
+                        _o3: kalpanaState._o3,
+                        _p4: kalpanaState._p4
+                    };
+                    savePack(genPack).catch(e => console.error("Auto pack save warning:", e));
+                    renderKnowledgePacks().catch(e => console.error("Pack render error:", e));
+                    console.log("✅ Auto-initialized & saved General Chat Memory Pack");
                 } else {
                     addMessage("Kalpanā", "I need you to activate a Knowledge Pack before we begin. Please select one from the menu.");
                     return;
@@ -1087,38 +1103,33 @@
                 const evidence = topPeaks.map(p => ({ text: rawTextWords.slice(p.t * 80, p.t * 80 + 120).join(" "), latency: p.latency }));
                 const searchLatency = Math.round(performance.now() - startTime);
 
-                if (evidence.length === 0) {
-                    responseDiv.innerText = "Kalpanā Alert: I couldn't find any relevant evidence in the active knowledge pack.";
-                    setRetrieveButtonMode(false);
-                    isRetrieving = false;
-                    return;
+                if (evidence.length > 0 && evidence[0].text.trim().length > 0) {
+                    // Show Evidence immediately in UI
+                    const evidenceHtml = evidence.map((ev, i) => `
+                        <div class="mb-3 border-l-2 border-sky-500/30 pl-3">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sky-400 font-bold text-[10px] uppercase tracking-tighter">Shard ${i+1} Retrieval</span>
+                                <span class="text-[9px] text-slate-500 font-mono">${ev.latency.toFixed(4)} ms</span>
+                            </div>
+                            <span class="text-slate-300 text-sm leading-relaxed block">${ev.text}</span>
+                        </div>
+                    `).join("");
+                    
+                    addMessage("Kalpanā (Evidence)", `
+                        <details class="group mt-2">
+                            <summary class="cursor-pointer mb-2 text-[10px] text-slate-400 italic font-semibold border-b border-white/5 pb-2 flex justify-between items-center outline-none list-none">
+                                <span class="flex items-center">
+                                    <svg class="w-3 h-3 mr-1 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    Kalpanā's Recalled Evidence (Click to expand)
+                                </span>
+                                <span class="text-emerald-400 font-mono bg-emerald-400/10 px-2 py-0.5 rounded">Total Latency: ${searchLatency.toFixed(1)} ms</span>
+                            </summary>
+                            <div class="pt-2">
+                                ${evidenceHtml}
+                            </div>
+                        </details>
+                    `);
                 }
-
-                // Show Evidence immediately in UI
-                const evidenceHtml = evidence.map((ev, i) => `
-                    <div class="mb-3 border-l-2 border-sky-500/30 pl-3">
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="text-sky-400 font-bold text-[10px] uppercase tracking-tighter">Shard ${i+1} Retrieval</span>
-                            <span class="text-[9px] text-slate-500 font-mono">${ev.latency.toFixed(4)} ms</span>
-                        </div>
-                        <span class="text-slate-300 text-sm leading-relaxed block">${ev.text}</span>
-                    </div>
-                `).join("");
-                
-                addMessage("Kalpanā (Evidence)", `
-                    <details class="group mt-2">
-                        <summary class="cursor-pointer mb-2 text-[10px] text-slate-400 italic font-semibold border-b border-white/5 pb-2 flex justify-between items-center outline-none list-none">
-                            <span class="flex items-center">
-                                <svg class="w-3 h-3 mr-1 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                Kalpanā's Recalled Evidence (Click to expand)
-                            </span>
-                            <span class="text-emerald-400 font-mono bg-emerald-400/10 px-2 py-0.5 rounded">Total Latency: ${searchLatency.toFixed(1)} ms</span>
-                        </summary>
-                        <div class="pt-2">
-                            ${evidenceHtml}
-                        </div>
-                    </details>
-                `);
 
                 const isGemini = document.getElementById('mode-toggle')?.checked ?? true;
                 
