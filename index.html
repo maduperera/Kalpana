@@ -290,9 +290,8 @@
                     <div class="space-y-2">
                         <label class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Model Provider</label>
                         <select id="custom-api-provider" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-slate-200 outline-none focus:border-sky-500">
-                            <option value="default">Default Server Backend (Free)</option>
-                            <option value="gemini">Google Gemini API</option>
-                            <option value="openai">OpenAI API (GPT-4o)</option>
+                            <option value="gemini">Google Gemini API (Free or Paid Key)</option>
+                            <option value="openai">OpenAI API (GPT-4o / GPT-4)</option>
                             <option value="anthropic">Anthropic Claude API</option>
                             <option value="deepseek">DeepSeek API</option>
                         </select>
@@ -1191,8 +1190,22 @@
                         "INSTRUCTION: Use the above recalled context/document evidence if relevant. If the recalled context does not contain the complete answer to the user's question, answer fully, accurately, and thoroughly using your full general knowledge base."
                     ];
 
-                    const customProvider = localStorage.getItem('kalpana_custom_api_provider') || 'default';
+                    const customProvider = localStorage.getItem('kalpana_custom_api_provider') || 'gemini';
                     const customApiKey = localStorage.getItem('kalpana_custom_api_key') || '';
+
+                    if (!customApiKey) {
+                        responseDiv.innerHTML = `
+                            <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs leading-relaxed">
+                                <strong class="block text-sm mb-1">🔑 API Key Required</strong>
+                                To generate AI answers, please enter your API key (Google Gemini, OpenAI, Claude, or DeepSeek) in the <strong>Side Menu (☰ ➔ Custom API Key Settings)</strong>.
+                                <br/><br/>
+                                <span class="text-slate-400">Your key is stored 100% locally in your browser memory and is never stored on our servers.</span>
+                            </div>
+                        `;
+                        setRetrieveButtonMode(false);
+                        isRetrieving = false;
+                        return;
+                    }
 
                     const kalpanaChat = firebase.functions().httpsCallable('kalpanaChat');
                     const { data } = await kalpanaChat({ 
