@@ -1307,8 +1307,8 @@
         }
 
         function getEfficiencyHtml(latency, sentTokens) {
-            const totalPackTokens = Math.max(Math.ceil(rawTextWords.length * 1.33), 1000);
-            const savedCurrentQuery = Math.max(0, totalPackTokens - sentTokens);
+            const totalPackTokens = Math.ceil(rawTextWords.length * 1.33);
+            const savedCurrentQuery = totalPackTokens > 0 ? Math.max(0, totalPackTokens - sentTokens) : 0;
             const ramMultiplier = 8192 / 6.3; 
             const savedMWh = (297 * (latency / 1000)) / 3.6; 
 
