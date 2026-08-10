@@ -1225,8 +1225,10 @@
                 }
 
                 // Metrics for Voice and UI
-                const evidenceText = evidence.map(e => e.text).join(" ");
+                const evidenceText = evidence.filter(e => e.text).map(e => e.text).join(" ");
+                const queryTokens = Math.ceil(query.length / 4);
                 const evidenceTokens = Math.ceil(evidenceText.length / 4);
+                const actualPayloadTokens = Math.max(30, queryTokens + evidenceTokens + 25);
 
                 let copyBtnHtml = "";
                 if (isGemini) {
@@ -1240,7 +1242,7 @@
                     `;
                 }
 
-                const efficiencyHtml = getEfficiencyHtml(searchLatency, evidenceTokens);
+                const efficiencyHtml = getEfficiencyHtml(searchLatency, actualPayloadTokens);
                 if (typeof marked !== 'undefined') {
                     responseDiv.innerHTML = `<div class="answer-content markdown-content">${marked.parse(answer)}</div> ${copyBtnHtml} ${efficiencyHtml}`;
                 } else {
@@ -1305,7 +1307,7 @@
         }
 
         function getEfficiencyHtml(latency, sentTokens) {
-            const totalPackTokens = Math.ceil(rawTextWords.length * 1.33);
+            const totalPackTokens = Math.max(Math.ceil(rawTextWords.length * 1.33), 1000);
             const savedCurrentQuery = Math.max(0, totalPackTokens - sentTokens);
             const ramMultiplier = 8192 / 6.3; 
             const savedMWh = (297 * (latency / 1000)) / 3.6; 
