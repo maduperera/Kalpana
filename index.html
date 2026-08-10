@@ -1148,8 +1148,23 @@
                 }
 
                 resonances.sort((a, b) => b.score - a.score);
-                const topPeaks = resonances.slice(0, 10); topPeaks.sort((a, b) => a.t - b.t);
-                const evidence = topPeaks.map(p => ({ text: rawTextWords.slice(p.t * 80, p.t * 80 + 120).join(" "), latency: p.latency }));
+                const topPeaks = resonances.slice(0, 5);
+                topPeaks.sort((a, b) => a.t - b.t);
+                
+                // De-duplicate overlapping text shards for clean UI presentation
+                const rawEvidence = topPeaks.map(p => ({ 
+                    text: rawTextWords.slice(p.t * 80, p.t * 80 + 120).join(" "), 
+                    latency: p.latency 
+                }));
+                
+                const distinctEvidence = [];
+                for (const item of rawEvidence) {
+                    if (!distinctEvidence.some(d => d.text.includes(item.text.slice(0, 40)) || item.text.includes(d.text.slice(0, 40)))) {
+                        distinctEvidence.push(item);
+                    }
+                    if (distinctEvidence.length >= 2) break;
+                }
+                const evidence = distinctEvidence.length > 0 ? distinctEvidence : rawEvidence.slice(0, 1);
                 const searchLatency = Math.round(performance.now() - startTime);
 
                 if (evidence.length > 0 && evidence[0].text.trim().length > 0) {
