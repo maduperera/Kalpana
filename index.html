@@ -526,6 +526,8 @@
                 let userName = "";
                 if (user) {
                     userName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+                    userName = userName.charAt(0).toUpperCase() + userName.slice(1);
+                }
                 const greetingText = userName ? `${greeting} ${userName}.` : `${greeting}.`;
                 addMessage("Kalpanā", `${greetingText} Welcome to Kalpanā! Type a message to chat, or select/create a Knowledge Pack from the menu.`);
                 loadCustomApiKeySettings();
