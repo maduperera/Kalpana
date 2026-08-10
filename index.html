@@ -431,7 +431,7 @@
     <script type="module">
         import { pipeline } from "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.16.0";
 
-        const APP_VERSION = "3.0.3";
+        const APP_VERSION = "3.0.4";
         const USE_WASM = true; 
         
         let wasmEngine = null;
@@ -1153,11 +1153,14 @@
                 const searchLatency = Math.round(performance.now() - startTime);
 
                 if (evidence.length > 0 && evidence[0].text.trim().length > 0) {
-                    // Show Evidence immediately in UI
+                    const isDocPack = activePackId && activePackId !== 'kp-general-chat';
+                    const labelTitle = isDocPack ? "Kalpanā's Recalled Document Evidence" : "Kalpanā's Recalled Conversation Memory";
+                    const itemLabel = isDocPack ? "Document Shard" : "Chat Memory Turn";
+
                     const evidenceHtml = evidence.map((ev, i) => `
                         <div class="mb-3 border-l-2 border-sky-500/30 pl-3">
                             <div class="flex justify-between items-center mb-1">
-                                <span class="text-sky-400 font-bold text-[10px] uppercase tracking-tighter">Shard ${i+1} Retrieval</span>
+                                <span class="text-sky-400 font-bold text-[10px] uppercase tracking-tighter">${itemLabel} ${i+1}</span>
                                 <span class="text-[9px] text-slate-500 font-mono">${ev.latency.toFixed(4)} ms</span>
                             </div>
                             <span class="text-slate-300 text-sm leading-relaxed block">${ev.text}</span>
@@ -1169,7 +1172,7 @@
                             <summary class="cursor-pointer mb-2 text-[10px] text-slate-400 italic font-semibold border-b border-white/5 pb-2 flex justify-between items-center outline-none list-none">
                                 <span class="flex items-center">
                                     <svg class="w-3 h-3 mr-1 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                    Kalpanā's Recalled Evidence (Click to expand)
+                                    ${labelTitle} (Click to expand)
                                 </span>
                                 <span class="text-emerald-400 font-mono bg-emerald-400/10 px-2 py-0.5 rounded">Total Latency: ${searchLatency.toFixed(1)} ms</span>
                             </summary>
